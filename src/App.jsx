@@ -7,19 +7,31 @@ import ReviewSection from "./components/review";
 import Contact from "./components/contact";
 import Footer from "./layout/footer";
 
+import { BrowserRouter, Routes } from "react-router-dom";
+import { Route } from "react-router-dom";
+
 function App() {
   const [cart, setCart] = useState(0);
 
   return (
-    <>
+    <BrowserRouter>
       <Header cart={cart} />
-      <HeroSection />
-      <AboutSection />
-      <ProductSection changeCart={setCart} />
-      <ReviewSection />
-      <Contact />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <HeroSection />
+              <AboutSection />
+              <ProductSection changeCart={setCart} />
+              <ReviewSection />
+              <Contact />
+            </>
+          }
+        />
+      </Routes>
       <Footer />
-    </>
+    </BrowserRouter>
   );
 }
 export default App;

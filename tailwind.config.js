@@ -7,6 +7,10 @@ export default {
         primary: "#010066",
         secondary: "#ff8531",
         neutral: "#141414",
+        shades: {
+          100: "#f9f9f9",
+          200: "#acbad0",
+        },
       },
     },
   },

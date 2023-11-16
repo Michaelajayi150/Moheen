@@ -28,3 +28,43 @@
     rgb(2, 0, 102) 100%
   );
 }
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: 10px 15px;
+  width: 100%;
+  max-width: 1024px;
+  outline: none;
+  border: 1px solid #14141491;
+  background-color: transparent;
+}
+
+.contact-form input:hover,
+.contact-form textarea:hover {
+  border-color: #141414;
+}
+
+#message {
+  height: 150px;
+  overflow: visible;
+}
+
+.pop-modal {
+  padding: 1rem;
+  width: 300px;
+  font-size: 1rem;
+  background-color: #fff;
+  text-align: center;
+  box-shadow: 0px 20px 30px 0px rgba(153, 153, 153, 0.3);
+  position: fixed;
+  top: 4.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}

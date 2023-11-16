@@ -3,7 +3,7 @@ import { FaPlus } from "react-icons/fa6";
 
 function ProductCard({ image, title, amount }) {
   return (
-    <div className="shadow-md rounded-md overflow-hidden min-w-[260px]  max-w-[280px]">
+    <div className="shadow-md rounded-md overflow-hidden w-full">
       <img
         className="w-full hover:scale-105 duration-500 cursor-pointer"
         src={image}

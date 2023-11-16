@@ -2,13 +2,16 @@ import { aboutImage } from "../assets";
 
 function AboutSection() {
   return (
-    <section className="min-h-screen py-16 px-6 max-w-[1120px] mx-auto flex max-md:flex-col justify-between gap-4">
+    <section
+      id="about"
+      className="min-h-[60vh] py-16 px-6 max-w-[1120px] mx-auto flex max-md:flex-col justify-between gap-8 md:gap-4"
+    >
       <div className="md:w-8/12 space-y-3">
         <h2 className="text-3xl font-semibold relative w-fit">
           About Us
           <span className="absolute -z-0 right-1/4 bg-[#32338536] w-10 h-10 rounded-full" />
         </h2>
-        <p className="max-w-lg">
+        <p className="md:max-w-lg">
           Welcome to Moheen Collections, where timeless elegance meets
           contemporary style. At Moheen Collections, we take pride in curating a
           diverse range of exquisite products that embody the essence of
