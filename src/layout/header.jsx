@@ -1,18 +1,23 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { AuthContext, CartContext } from "../App";
+import { useContext, useState } from "react";
+import { HashLink as Link } from "react-router-hash-link";
+
 import { Logo } from "../assets";
 import * as MdIcons from "react-icons/md";
 import * as RiIcons from "react-icons/ri";
-import { HashLink as Link } from "react-router-hash-link";
 
-function Header({ cart }) {
+function Header() {
+  const { cart } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
+
   const [menu, setMenu] = useState(false);
 
   const navLinks = [
-    { name: "Home", href: "#" },
-    { name: "About", href: "#about" },
-    { name: "Products", href: "#products" },
-    { name: "Contact", href: "#contact" },
+    { name: "Home", href: "/" },
+    { name: "About", href: "/#about" },
+    { name: "Products", href: "/#products" },
+    { name: "Contact", href: "/#contact" },
   ];
 
   return (
@@ -49,7 +54,6 @@ function Header({ cart }) {
       </nav>
 
       <nav className="flex items-center justify-between py-3 px-6 lg:max-w-[1120px] mx-auto bg-white relative">
-        <img src={Logo} alt="Moheen Collection" />
         {menu ? (
           <MdIcons.MdClose
             onClick={() => setMenu((prev) => !prev)}
@@ -63,11 +67,12 @@ function Header({ cart }) {
             size="1.5rem"
           />
         )}
+        <img src={Logo} alt="Moheen Collection" />
 
         <nav
           className={`${
             menu
-              ? "fixed top-20 h-full flex flex-col justify-center bg-white right-0 w-1/2"
+              ? "fixed top-20 h-full flex flex-col justify-center bg-white left-0 w-1/2"
               : "relative hidden justify-between"
           } md:justify-between items-center sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
         >
@@ -99,15 +104,21 @@ function Header({ cart }) {
               </div>
               <span className="sm:hidden">Search</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer hover:text-secondary hover:border-secondary relative">
-                <MdIcons.MdOutlineShoppingBag size="1.2rem" />
-                <span className="absolute -bottom-1 -right-1 flex items-center justify-center h-4 w-4 rounded-full border border-neutral text-[10px] font-semibold bg-white">
-                  {cart}
-                </span>
+            {!user ? (
+              <div className="uppercase text-sm bg-primary border-2 border-white hover:bg-white hover:border-primary hover:text-primary font-semibold cursor-pointer px-6 pt-2 pb-3 rounded-md text-white">
+                Login
               </div>
-              <span className="sm:hidden">Cart ({cart})</span>
-            </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer hover:text-secondary hover:border-secondary relative">
+                  <MdIcons.MdOutlineShoppingBag size="1.2rem" />
+                  <span className="absolute -bottom-1 -right-1 flex items-center justify-center h-4 w-4 rounded-full border border-neutral text-[10px] font-semibold bg-white">
+                    {cart}
+                  </span>
+                </div>
+                <span className="sm:hidden">Cart ({cart})</span>
+              </div>
+            )}
           </nav>
         </nav>
       </nav>

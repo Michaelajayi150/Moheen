@@ -1,36 +1,30 @@
-import { useState } from "react";
 import Header from "./layout/header";
-import HeroSection from "./components/hero";
-import AboutSection from "./components/about";
-import ProductSection from "./components/products";
-import ReviewSection from "./components/review";
-import Contact from "./components/contact";
 import Footer from "./layout/footer";
+import LandingPage from "./pages/landing";
+import ProductPage from "./pages/product";
 
-import { BrowserRouter, Routes } from "react-router-dom";
-import { Route } from "react-router-dom";
+import { createContext, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+export const CartContext = createContext();
+export const AuthContext = createContext();
 
 function App() {
   const [cart, setCart] = useState(0);
+  const [user, setUser] = useState(null);
 
   return (
     <BrowserRouter>
-      <Header cart={cart} />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <HeroSection />
-              <AboutSection />
-              <ProductSection changeCart={setCart} />
-              <ReviewSection />
-              <Contact />
-            </>
-          }
-        />
-      </Routes>
-      <Footer />
+      <AuthContext.Provider value={{ setUser, user }}>
+        <CartContext.Provider value={{ setCart, cart }}>
+          <Header />
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/products" element={<ProductPage />} />
+          </Routes>
+          <Footer />
+        </CartContext.Provider>
+      </AuthContext.Provider>
     </BrowserRouter>
   );
 }
