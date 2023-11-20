@@ -15,7 +15,7 @@ function Sign() {
   };
 
   return (
-    <div className="opacity-100 scale-100 visible fixed top-0 left-0 w-full h-full flex items-center justify-center">
+    <div className="z-50 fixed top-0 left-0 w-full h-full flex items-center justify-center">
       <div
         onClick={() => setOption("")}
         className="absolute bg-neutral opacity-70 w-full h-full cursor-pointer"
