@@ -6,12 +6,14 @@ import { HashLink as Link } from "react-router-hash-link";
 import { Logo } from "../assets";
 import * as MdIcons from "react-icons/md";
 import * as RiIcons from "react-icons/ri";
+import { useLocation } from "react-router-dom";
 
 function Header() {
   const { cart } = useContext(CartContext);
-  const { user } = useContext(AuthContext);
+  const { user, setOption } = useContext(AuthContext);
 
   const [menu, setMenu] = useState(false);
+  const { pathname } = useLocation();
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -53,75 +55,81 @@ function Header() {
         </div>
       </nav>
 
-      <nav className="flex items-center justify-between py-3 px-6 lg:max-w-[1120px] mx-auto bg-white relative">
-        {menu ? (
-          <MdIcons.MdClose
-            onClick={() => setMenu((prev) => !prev)}
-            className="sm:hidden w-fit"
-            size="1.5rem"
-          />
-        ) : (
-          <MdIcons.MdMenu
-            onClick={() => setMenu((prev) => !prev)}
-            className="sm:hidden w-fit"
-            size="1.5rem"
-          />
-        )}
-        <img src={Logo} alt="Moheen Collection" />
-
-        <nav
-          className={`${
-            menu
-              ? "fixed top-20 h-full flex flex-col justify-center bg-white left-0 w-1/2"
-              : "relative hidden justify-between"
-          } md:justify-between items-center sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
-        >
-          <nav
-            className={`${
-              menu ? "flex-col" : "flex-row"
-            } flex items-center gap-4 md:flex-row`}
-          >
-            {navLinks.map((link, id) => (
-              <Link
-                smooth
-                to={link.href}
-                key={id + link.name}
-                className="cursor-pointer"
-              >
-                {link.name}
-              </Link>
-            ))}
-          </nav>
+      {pathname.split("/")[1] === "register" ||
+      pathname.split("/")[1] === "login" ? null : (
+        <nav className="flex items-center justify-between py-3 px-6 lg:max-w-[1120px] mx-auto bg-white relative">
+          {menu ? (
+            <MdIcons.MdClose
+              onClick={() => setMenu((prev) => !prev)}
+              className="sm:hidden w-fit"
+              size="1.5rem"
+            />
+          ) : (
+            <MdIcons.MdMenu
+              onClick={() => setMenu((prev) => !prev)}
+              className="sm:hidden w-fit"
+              size="1.5rem"
+            />
+          )}
+          <img src={Logo} alt="Moheen Collection" />
 
           <nav
             className={`${
-              menu ? "flex-col" : "flex-row"
-            } flex items-center gap-4 md:gap-3 py-2 md:flex-row`}
+              menu
+                ? "fixed top-20 h-full flex flex-col justify-center bg-white left-0 w-1/2"
+                : "relative hidden justify-between"
+            } md:justify-between items-center sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
           >
-            <div className="flex items-center gap-2">
-              <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer hover:text-secondary hover:border-secondary">
-                <MdIcons.MdSearch size="1.2rem" />
-              </div>
-              <span className="sm:hidden">Search</span>
-            </div>
-            {!user ? (
-              <div className="uppercase text-sm bg-primary border-2 border-white hover:bg-white hover:border-primary hover:text-primary font-semibold cursor-pointer px-6 pt-2 pb-3 rounded-md text-white">
-                Login
-              </div>
-            ) : (
+            <nav
+              className={`${
+                menu ? "flex-col" : "flex-row"
+              } flex items-center gap-4 md:flex-row`}
+            >
+              {navLinks.map((link, id) => (
+                <Link
+                  smooth
+                  to={link.href}
+                  key={id + link.name}
+                  className="cursor-pointer"
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </nav>
+
+            <nav
+              className={`${
+                menu ? "flex-col" : "flex-row"
+              } flex items-center gap-4 md:gap-3 py-2 md:flex-row`}
+            >
               <div className="flex items-center gap-2">
-                <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer hover:text-secondary hover:border-secondary relative">
-                  <MdIcons.MdOutlineShoppingBag size="1.2rem" />
-                  <span className="absolute -bottom-1 -right-1 flex items-center justify-center h-4 w-4 rounded-full border border-neutral text-[10px] font-semibold bg-white">
-                    {cart}
-                  </span>
+                <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer hover:text-secondary hover:border-secondary">
+                  <MdIcons.MdSearch size="1.2rem" />
                 </div>
-                <span className="sm:hidden">Cart ({cart})</span>
+                <span className="sm:hidden">Search</span>
               </div>
-            )}
+              {!user ? (
+                <div
+                  onClick={() => setOption("login")}
+                  className="uppercase text-sm bg-primary border-2 border-white hover:bg-white hover:border-primary hover:text-primary font-semibold cursor-pointer px-6 pt-2 pb-3 rounded-md text-white"
+                >
+                  Login
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer hover:text-secondary hover:border-secondary relative">
+                    <MdIcons.MdOutlineShoppingBag size="1.2rem" />
+                    <span className="absolute -bottom-1 -right-1 flex items-center justify-center h-4 w-4 rounded-full border border-neutral text-[10px] font-semibold bg-white">
+                      {cart}
+                    </span>
+                  </div>
+                  <span className="sm:hidden">Cart ({cart})</span>
+                </div>
+              )}
+            </nav>
           </nav>
         </nav>
-      </nav>
+      )}
     </header>
   );
 }

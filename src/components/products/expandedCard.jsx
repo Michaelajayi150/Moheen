@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { MdClose } from "react-icons/md";
+import { AuthContext } from "../../App";
 
 function ExpandedCard({
   image,
@@ -12,6 +13,15 @@ function ExpandedCard({
   setModal,
 }) {
   const [quantity, setQuantity] = useState(1);
+  const { user, setOption } = useContext(AuthContext);
+
+  const handleSubmit = (event) => {
+    if (!user) {
+      setOption("login");
+    } else {
+      console.log(event);
+    }
+  };
 
   return (
     <>
@@ -88,10 +98,16 @@ function ExpandedCard({
           </div>
 
           <div className="flex max-sm:flex-wrap-reverse gap-3 uppercase text-white">
-            <div className="bg-secondary max-sm:w-fit border sm:mt-3 border-white hover:bg-white hover:border-secondary hover:text-secondary cursor-pointer px-6 pt-2 pb-3 rounded">
+            <div
+              onClick={() => handleSubmit("add")}
+              className="bg-secondary max-sm:w-fit border sm:mt-3 border-white hover:bg-white hover:border-secondary hover:text-secondary cursor-pointer px-6 pt-2 pb-3 rounded"
+            >
               Add to cart
             </div>
-            <div className="bg-primary max-sm:w-fit border sm:mt-3 border-white hover:bg-white hover:border-primary hover:text-primary  cursor-pointer px-6 pt-2 pb-3 rounded">
+            <div
+              onClick={() => handleSubmit("pay")}
+              className="bg-primary max-sm:w-fit border sm:mt-3 border-white hover:bg-white hover:border-primary hover:text-primary  cursor-pointer px-6 pt-2 pb-3 rounded"
+            >
               Pay now
             </div>
           </div>
