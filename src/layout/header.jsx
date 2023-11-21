@@ -73,12 +73,21 @@ function Header() {
             />
           )}
 
+          <div
+            onClick={() => setMenu((prev) => !prev)}
+            className={`${
+              menu
+                ? "fixed top-20 h-full bg-neutral bg-opacity-50 left-0 w-full"
+                : "relative hidden"
+            } sm:hidden -z-10`}
+          />
+
           <nav
             className={`${
               menu
                 ? "fixed top-20 h-full flex flex-col justify-center bg-white right-0 w-1/2"
                 : "relative hidden justify-between"
-            } md:justify-between items-center sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
+            } md:justify-between items-center duration-500 sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
           >
             <nav
               className={`${
@@ -87,6 +96,7 @@ function Header() {
             >
               {navLinks.map((link, id) => (
                 <Link
+                  onClick={() => setMenu((prev) => !prev)}
                   smooth
                   to={link.href}
                   key={id + link.name}
