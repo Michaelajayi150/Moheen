@@ -12,6 +12,9 @@ export default {
           200: "#acbad0",
         },
       },
+      screens: {
+        xs: "345px",
+      },
     },
   },
   plugins: [],

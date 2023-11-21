@@ -1,7 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useContext, useState } from "react";
-import { MdClose } from "react-icons/md";
 import { AuthContext } from "../../App";
+import { MdClose } from "react-icons/md";
+import { useContext, useState } from "react";
+import { db } from "../../middleware/firebase";
+import { collection, getDocs, query, setDoc, where } from "firebase/firestore";
+
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 function ExpandedCard({
   image,
@@ -11,15 +16,52 @@ function ExpandedCard({
   description,
   discount,
   setModal,
+  item,
 }) {
   const [quantity, setQuantity] = useState(1);
-  const { user, setOption } = useContext(AuthContext);
+  const [disabled, setDisabled] = useState(false);
+  const { user, setOption, setCart } = useContext(AuthContext);
+
+  async function addToCart(paid) {
+    const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      let data = doc.data();
+      data.cart = [
+        ...data.cart,
+        { id: item.id, type: item.type, quantity, paid },
+      ];
+
+      setDoc(doc.ref, { cart: data.cart }, { merge: true })
+        .then(() => {
+          setDisabled(false);
+          toast.success("Cart has been added", { containerId: item.id });
+          setCart(data.cart);
+          setModal(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Error. try again", { containerId: item.id });
+          setDisabled(false);
+        });
+    });
+  }
 
   const handleSubmit = (event) => {
     if (!user) {
       setOption("login");
     } else {
+      setDisabled(true);
+      let paid = false;
       console.log(event);
+      if (event === "pay") {
+        paid = true;
+        console.log("Load payment platform");
+      }
+
+      addToCart(paid);
     }
   };
 
@@ -52,7 +94,7 @@ function ExpandedCard({
 
           <div className="flex items-end justify-between">
             <div className="text-sm">
-              <label htmlFor="quantity">Quantity</label>
+              <label htmlFor={`quantity_${item.id}`}>Quantity</label>
               <form className="mt-2 relative max-w-[60px] w-full flex items-center text-sm">
                 <span
                   onClick={() =>
@@ -66,7 +108,7 @@ function ExpandedCard({
                   className="border-2 text-center py-1 px-2 border-neutral outline-none rounded w-full h-full"
                   type="text"
                   name="calculator"
-                  id="quantity"
+                  id={`quantity_${item.id}`}
                   placeholder="1"
                   value={quantity}
                   onChange={(e) => {
@@ -99,13 +141,13 @@ function ExpandedCard({
 
           <div className="flex max-sm:flex-wrap-reverse gap-3 uppercase text-white">
             <div
-              onClick={() => handleSubmit("add")}
+              onClick={() => !disabled && handleSubmit("add")}
               className="bg-secondary max-sm:w-fit border sm:mt-3 border-white hover:bg-white hover:border-secondary hover:text-secondary cursor-pointer px-6 pt-2 pb-3 rounded"
             >
               Add to cart
             </div>
             <div
-              onClick={() => handleSubmit("pay")}
+              onClick={() => !disabled && handleSubmit("pay")}
               className="bg-primary max-sm:w-fit border sm:mt-3 border-white hover:bg-white hover:border-primary hover:text-primary  cursor-pointer px-6 pt-2 pb-3 rounded"
             >
               Pay now

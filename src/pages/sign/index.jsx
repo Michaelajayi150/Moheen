@@ -8,12 +8,6 @@ import { Logo } from "../../assets";
 function Sign() {
   const { option, setOption } = useContext(AuthContext);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    console.log("Submitted");
-  };
-
   return (
     <div className="z-50 fixed top-0 left-0 w-full h-full flex items-center justify-center">
       <div
@@ -24,16 +18,7 @@ function Sign() {
         <div>
           <img src={Logo} alt="logo" />
         </div>
-        <form
-          onSubmit={handleSubmit}
-          className="w-full flex flex-col gap-3 justify-center"
-        >
-          {option === "login" ? (
-            <Login setOption={setOption} />
-          ) : (
-            <Register setOption={setOption} />
-          )}
-        </form>
+        <>{option === "login" ? <Login /> : <Register />}</>
         <div
           onClick={() => setOption(false)}
           className="absolute top-2 right-2 w-6 h-6 cursor-pointer rounded-full flex items-center justify-center bg-shades-200 bg-opacity-50"

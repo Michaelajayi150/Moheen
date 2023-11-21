@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { AuthContext, CartContext } from "../App";
+import { AuthContext } from "../App";
 import { useContext, useState } from "react";
 import { HashLink as Link } from "react-router-hash-link";
 
@@ -9,8 +9,7 @@ import * as RiIcons from "react-icons/ri";
 import { useLocation } from "react-router-dom";
 
 function Header() {
-  const { cart } = useContext(CartContext);
-  const { user, setOption } = useContext(AuthContext);
+  const { cart, user, setOption } = useContext(AuthContext);
 
   const [menu, setMenu] = useState(false);
   const { pathname } = useLocation();
@@ -116,15 +115,15 @@ function Header() {
                   Login
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
-                  <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer hover:text-secondary hover:border-secondary relative">
+                <Link to="/cart" className="flex items-center gap-2">
+                  <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer group hover:text-secondary hover:border-secondary relative">
                     <MdIcons.MdOutlineShoppingBag size="1.2rem" />
-                    <span className="absolute -bottom-1 -right-1 flex items-center justify-center h-4 w-4 rounded-full border border-neutral text-[10px] font-semibold bg-white">
-                      {cart}
+                    <span className="absolute -bottom-1 -right-1 flex items-center justify-center h-4 w-4 rounded-full border border-neutral group-hover:border-secondary text-[10px] font-semibold bg-white">
+                      {cart.length}
                     </span>
                   </div>
-                  <span className="sm:hidden">Cart ({cart})</span>
-                </div>
+                  <span className="sm:hidden">Cart ({cart.length})</span>
+                </Link>
               )}
             </nav>
           </nav>

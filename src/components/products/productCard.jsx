@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import ExpandedCard from "./expandedCard";
+import { ToastContainer } from "react-toastify";
 
 function ProductCard({ data, image, name, price, discount }) {
   const [modal, setModal] = useState(false);
@@ -32,6 +33,11 @@ function ProductCard({ data, image, name, price, discount }) {
           </div>
         </div>
       </div>
+      <ToastContainer
+        enableMultiContainer
+        containerId={data.id}
+        className="text-xs"
+      />
       <div
         className={`${
           !modal
@@ -39,7 +45,7 @@ function ProductCard({ data, image, name, price, discount }) {
             : "opacity-100 scale-100 visible fixed"
         } top-0 left-0 z-30 w-full h-full flex items-center justify-center`}
       >
-        <ExpandedCard {...data} setModal={setModal} />
+        <ExpandedCard item={data} {...data} setModal={setModal} />
       </div>
     </div>
   );
