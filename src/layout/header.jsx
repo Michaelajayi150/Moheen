@@ -57,6 +57,8 @@ function Header() {
       {pathname.split("/")[1] === "register" ||
       pathname.split("/")[1] === "login" ? null : (
         <nav className="flex items-center justify-between py-3 px-6 lg:max-w-[1120px] mx-auto bg-white relative">
+          <img src={Logo} alt="Moheen Collection" />
+
           {menu ? (
             <MdIcons.MdClose
               onClick={() => setMenu((prev) => !prev)}
@@ -70,12 +72,11 @@ function Header() {
               size="1.5rem"
             />
           )}
-          <img src={Logo} alt="Moheen Collection" />
 
           <nav
             className={`${
               menu
-                ? "fixed top-20 h-full flex flex-col justify-center bg-white left-0 w-1/2"
+                ? "fixed top-20 h-full flex flex-col justify-center bg-white right-0 w-1/2"
                 : "relative hidden justify-between"
             } md:justify-between items-center sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
           >

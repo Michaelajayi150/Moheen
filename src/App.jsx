@@ -30,7 +30,7 @@ function App() {
   }
 
   useEffect(() => {
-    const isUser = JSON.parse(localStorage.getItem("user_id")) || null;
+    const isUser = JSON.parse(localStorage.getItem("user_id"));
 
     if (isUser !== null) {
       setUserID(isUser);
