@@ -23,7 +23,7 @@ function Header() {
 
   return (
     <header
-      className={`${menu ? "fixed z-50" : "relative"} w-full md:relative`}
+      className={`${menu ? "fixed z-50" : "relative"} w-full md:!relative`}
     >
       <nav className="gradient px-6 w-full">
         <div className="flex items-center justify-between py-3 max-w-[1120px] mx-auto text-white">
@@ -87,7 +87,7 @@ function Header() {
               menu
                 ? "fixed top-20 h-full flex flex-col justify-center bg-white right-0 w-1/2"
                 : "relative hidden justify-between"
-            } md:justify-between items-center duration-500 sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
+            } md:justify-between md:!relative items-center duration-500 sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
           >
             <nav
               className={`${
