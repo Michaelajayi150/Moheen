@@ -8,15 +8,15 @@ function ProductCard({ data, image, name, price, discount }) {
   const [modal, setModal] = useState(false);
 
   return (
-    <div className="shadow-md rounded-md border-b-2 border-secondary overflow-hidden w-full">
-      <div className="bg-shades-200 min-h-[200px] sm:h-[200px] flex flex-col bg-opacity-40">
+    <div className="shadow-md rounded-md border-b-2 border-secondary overflow-hidden w-full flex flex-col">
+      <div className="bg-shades-200 min-h-[200px] flex flex-col bg-opacity-40">
         <img
           className="w-full h-full flex-1 hover:scale-105 duration-500 cursor-pointer"
           src={image}
           alt={name}
         />
       </div>
-      <div className="p-3 flex flex-col gap-3">
+      <div className="p-3 flex flex-col gap-3 flex-1">
         <h3 className="uppercase text-lg font-semibold">{name}</h3>
         <div className="flex items-center justify-between mt-auto">
           <p>

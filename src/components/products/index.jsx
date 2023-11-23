@@ -4,7 +4,7 @@ import { db } from "../../middleware/firebase";
 import { useEffect, useState } from "react";
 
 // eslint-disable-next-line react/prop-types
-function ProductCategory({ category, name }) {
+function ProductCategory({ category, name, max }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,6 +31,10 @@ function ProductCategory({ category, name }) {
 
   useEffect(() => {
     fetchPost();
+
+    if (max) {
+      setProducts(products.slice(0, max));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
