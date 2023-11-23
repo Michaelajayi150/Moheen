@@ -18,7 +18,7 @@ import { toast } from "react-toastify";
 function CartPage() {
   const [carts, setCarts] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
-  const { cart, user } = useContext(AuthContext);
+  const { cart, user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -213,21 +213,33 @@ function CartPage() {
           </p>
         </div>
 
-        <div className="bg-white p-4 w-full md:max-w-[300px]">
-          <h2 className="text-xl font-semibold">Profile</h2>
-          <div className="space-y-3 mt-4">
-            <div className="flex justify-between items-center gap-4">
-              <h3>Mail:</h3>
-              <span className="max-w-[20ch] xs:max-w-full md:max-w-[20ch] truncate">
-                {user?.email ? user.email : "Not Set"}
-              </span>
+        <div className="w-full md:max-w-[300px]">
+          <div className="bg-white p-4 w-full">
+            <h2 className="text-xl font-semibold">Profile</h2>
+            <div className="space-y-3 mt-4">
+              <div className="flex justify-between items-center gap-4">
+                <h3>Mail:</h3>
+                <span className="max-w-[20ch] xs:max-w-full md:max-w-[20ch] truncate">
+                  {user?.email ? user.email : "Not Set"}
+                </span>
+              </div>
+              <div className="flex justify-between items-center gap-4">
+                <h3>Address:</h3>
+                <span className="max-w-[20ch] xs:max-w-full md:max-w-[20ch] truncate">
+                  {user?.address ? user.address : "Not Set"}
+                </span>
+              </div>
             </div>
-            <div className="flex justify-between items-center gap-4">
-              <h3>Address:</h3>
-              <span className="max-w-[20ch] xs:max-w-full md:max-w-[20ch] truncate">
-                {user?.address ? user.address : "Not Set"}
-              </span>
-            </div>
+          </div>
+          <div
+            onClick={() => {
+              localStorage.removeItem("user_id");
+              setUser(null);
+              navigate("/");
+            }}
+            className="bg-primary hover:bg-secondary duration-300 text-white px-6 pt-1 pb-2 rounded block  text-center w-full sm:w-fit ml-auto mt-3 cursor-pointer"
+          >
+            Log out
           </div>
         </div>
       </div>
