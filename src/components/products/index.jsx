@@ -30,11 +30,15 @@ function ProductCategory({ category, name, max }) {
   };
 
   useEffect(() => {
-    fetchPost();
-
-    if (max) {
+    if (max && products.length > 4) {
+      console.log("splitted");
       setProducts(products.slice(0, max));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products]);
+
+  useEffect(() => {
+    fetchPost();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

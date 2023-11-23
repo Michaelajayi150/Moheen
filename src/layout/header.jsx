@@ -85,12 +85,12 @@ function Header() {
               menu
                 ? "max-sm:fixed max-sm:top-20 h-full flex max-sm:flex-col justify-center bg-white right-0 w-1/2"
                 : "relative hidden justify-between"
-            } md:justify-between items-center duration-500 sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
+            } sm:justify-between items-center duration-500 sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
           >
             <nav
               className={`${
                 menu ? "flex-col" : "flex-row"
-              } flex items-center gap-4 md:flex-row`}
+              } flex items-center gap-4 sm:flex-row`}
             >
               {navLinks.map((link, id) => (
                 <Link
@@ -108,7 +108,7 @@ function Header() {
             <nav
               className={`${
                 menu ? "flex-col" : "flex-row"
-              } flex items-center gap-4 md:gap-3 py-2 md:flex-row`}
+              } flex items-center gap-4 sm:gap-3 py-2 sm:flex-row`}
             >
               <div className="flex items-center gap-2">
                 <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer hover:text-secondary hover:border-secondary">
