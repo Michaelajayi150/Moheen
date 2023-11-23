@@ -27,6 +27,7 @@ function ProductCategory({ category, name, max }) {
         setProducts([]);
         setLoading(false);
       });
+    setLoading(false);
   };
 
   useEffect(() => {
