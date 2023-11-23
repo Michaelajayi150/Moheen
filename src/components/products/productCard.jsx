@@ -9,7 +9,7 @@ function ProductCard({ data, image, name, price, discount }) {
 
   return (
     <div className="shadow-md rounded-md border-b-2 border-secondary overflow-hidden w-full">
-      <div className="bg-shades-200 min-h-[200px] flex flex-col bg-opacity-40">
+      <div className="bg-shades-200 h-[200px] flex flex-col bg-opacity-40">
         <img
           className="w-full h-full flex-1 hover:scale-105 duration-500 cursor-pointer"
           src={image}
