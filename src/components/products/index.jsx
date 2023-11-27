@@ -32,7 +32,6 @@ function ProductCategory({ category, name, max }) {
 
   useEffect(() => {
     if (max && products.length > 4) {
-      console.log("splitted");
       setProducts(products.slice(0, max));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

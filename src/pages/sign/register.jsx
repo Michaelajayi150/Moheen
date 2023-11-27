@@ -114,10 +114,10 @@ function Register() {
       className="w-full flex flex-col gap-3 justify-center"
     >
       <div className="flex flex-col gap-2">
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email2">Email</label>
         <input
           type="email"
-          id="email"
+          id="email2"
           value={email}
           placeholder="Your Email"
           onChange={(e) => {

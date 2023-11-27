@@ -9,6 +9,7 @@ import Sign from "./pages/sign";
 import { db } from "./middleware/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import CartPage from "./pages/cart";
+import Admin from "./pages/admin";
 
 export const CartContext = createContext();
 export const AuthContext = createContext();
@@ -53,6 +54,7 @@ function App() {
         {option && <Sign />}
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/products" element={<ProductPage />} />
         </Routes>
