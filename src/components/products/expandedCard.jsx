@@ -3,6 +3,7 @@ import { AuthContext } from "../../App";
 import { MdClose } from "react-icons/md";
 import { useContext, useState } from "react";
 import { db } from "../../middleware/firebase";
+import { usePaystackPayment } from "react-paystack";
 import { collection, getDocs, query, setDoc, where } from "firebase/firestore";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -49,19 +50,45 @@ function ExpandedCard({
     });
   }
 
+  // you can call this function anything
+  const onSuccess = (reference) => {
+    // Implementation for whatever you want to do with reference and after success call.
+    console.log(reference);
+    const paid = true;
+    addToCart(paid);
+  };
+
+  // you can call this function anything
+  const onClose = () => {
+    // implementation for  whatever you want to do when the Paystack dialog closed.
+    console.log("closed");
+  };
+
+  const initializePayment = usePaystackPayment({
+    publicKey: "pk_test_7602f6ead5a21318837c96878fbe20eb35a34f16",
+    reference: new Date().getTime().toString(),
+    email: user?.email,
+    amount:
+      (discount
+        ? price * quantity - (discount / 100) * (price * quantity)
+        : price * quantity) * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
+    currency: "NGN",
+  });
+
   const handleSubmit = (event) => {
     if (!user) {
       setOption("login");
     } else {
       setDisabled(true);
       let paid = false;
-      console.log(event);
-      if (event === "pay") {
-        paid = true;
-        console.log("Load payment platform");
-      }
 
-      addToCart(paid);
+      if (event === "pay") {
+        console.log("Load payment platform");
+        initializePayment(onSuccess, onClose);
+      } else {
+        console.log("Add to cart");
+        addToCart(paid);
+      }
     }
   };
 

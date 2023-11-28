@@ -62,7 +62,9 @@ function CartPage() {
 
       if (docSnap.exists()) {
         let data = docSnap.data();
-        const amount = data.discount
+        const amount = item.paid
+          ? 0
+          : data.discount
           ? data.price * item.quantity -
             (data.discount / 100) * (data.price * item.quantity)
           : data.price * item.quantity;
@@ -104,7 +106,7 @@ function CartPage() {
                 {carts.map((item, id) => (
                   <div
                     key={id}
-                    className="w-full flex max-sm:flex-col sm:items-stretch gap-6 border-b border-shades-200 pb-6"
+                    className="w-full flex max-sm:flex-col md:flex-col lg:flex-row sm:items-stretch gap-6 border-b border-shades-200 pb-6"
                   >
                     <div className="w-full">
                       <img
@@ -184,9 +186,15 @@ function CartPage() {
                           </span>
                         </div>
                       </div>
-                      <div className="bg-primary hover:bg-secondary duration-300 text-white px-6 pt-1 pb-2 rounded block text-center sm:w-fit mt-6 ml-auto cursor-pointer">
-                        Pay now
-                      </div>
+                      {item.paid ? (
+                        <div className="bg-green-900 text-white px-6 pt-1 pb-2 rounded block text-center sm:w-fit mt-6 ml-auto cursor-default">
+                          Paid
+                        </div>
+                      ) : (
+                        <div className="bg-primary hover:bg-secondary duration-300 text-white px-6 pt-1 pb-2 rounded block text-center sm:w-fit mt-6 ml-auto cursor-pointer">
+                          Pay now
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
