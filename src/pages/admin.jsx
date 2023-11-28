@@ -152,12 +152,12 @@ function Admin() {
 
   return (
     <section className="bg-shades-100">
-      <div className="py-16 px-6 max-w-[1120px] mx-auto flex max-md:flex-col-reverse items-start gap-8">
+      <div className="py-16 px-3 xs:px-6 max-w-[1120px] mx-auto flex max-md:flex-col-reverse items-start gap-8">
         <div className="w-full space-y-6">
           <div className="bg-white">
             <form
               onSubmit={handleSubmit}
-              className="flex flex-col w-full gap-4 p-8"
+              className="flex flex-col w-full gap-4 p-4 sm:p-8"
             >
               <div className="grid xs:grid-cols-3 w-full gap-4">
                 <div className="flex flex-col gap-2 w-full xs:col-span-2">
