@@ -1,13 +1,14 @@
+import { pngIcon } from "../assets";
 import { AuthContext } from "../App";
-import { useState } from "react";
-import { useContext, useEffect, useRef } from "react";
+import { db } from "../middleware/firebase";
 import { useNavigate } from "react-router-dom";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { pngIcon } from "../assets";
+import CreatableSelect from "react-select/creatable";
 import { addDoc, collection } from "firebase/firestore";
-import { db } from "../middleware/firebase";
+import { useState, useContext, useEffect, useRef } from "react";
 
 function Admin() {
+  const [inputValue, setInputValue] = useState("");
   const wrapperRef = useRef(null);
   const [product, setProduct] = useState({
     name: "",
@@ -84,6 +85,26 @@ function Admin() {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (!inputValue) return;
+    switch (event.key) {
+      case "Enter":
+      case "Tab":
+        setProduct((prev) => ({
+          ...prev,
+          tags: [
+            ...prev.tags,
+            {
+              label: inputValue,
+              value: inputValue,
+            },
+          ],
+        }));
+        setInputValue("");
+        event.preventDefault();
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     let error = [];
@@ -138,8 +159,8 @@ function Admin() {
               onSubmit={handleSubmit}
               className="flex flex-col w-full gap-4 p-8"
             >
-              <div className="grid grid-cols-2 w-full gap-4">
-                <div className="flex flex-col gap-2 w-full">
+              <div className="grid xs:grid-cols-3 w-full gap-4">
+                <div className="flex flex-col gap-2 w-full xs:col-span-2">
                   <label htmlFor="name">
                     Name <span className="text-red-500">*</span>
                   </label>
@@ -185,7 +206,7 @@ function Admin() {
               </div>
 
               {/* Others */}
-              <div className="grid w-full grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid xs:grid-cols-3 sm:grid-cols-5 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <div className="flex flex-col gap-2">
                   <label htmlFor="Discount">Discount (%)</label>
                   <input
@@ -210,11 +231,12 @@ function Admin() {
                     }
                   />
                 </div>
-                <div className="flex flex-col w-full gap-2">
+                <div className="flex flex-col gap-2 xs:col-span-2">
                   <label htmlFor="type">
                     Type <span className="text-red-500">*</span>
                   </label>
                   <select
+                    id="type"
                     className="p-2 border border-neutral cursor-pointer"
                     onChange={(e) =>
                       setProduct((prev) => ({ ...prev, type: e.target.value }))
@@ -228,20 +250,25 @@ function Admin() {
                   </select>
                 </div>
 
-                <div className="flex flex-col w-full gap-2">
+                <div className="flex flex-col gap-2 xs:col-span-3 sm:col-span-2 md:col-span-3 lg:col-span-2">
                   <label htmlFor="type">Tags</label>
-                  <select
-                    className="p-2 border border-neutral cursor-pointer"
-                    onChange={(e) =>
-                      setProduct((prev) => ({ ...prev, tags: e.target.value }))
+                  <CreatableSelect
+                    components={{
+                      DropdownIndicator: null,
+                    }}
+                    inputValue={inputValue}
+                    isClearable
+                    isMulti
+                    menuIsOpen={false}
+                    onChange={(newValue) =>
+                      setProduct((prev) => ({ ...prev, tags: newValue }))
                     }
-                  >
-                    {categories.map((category) => (
-                      <option value={category.target} key={category.name}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
+                    onInputChange={(newValue) => setInputValue(newValue)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Type something and press enter..."
+                    className="overflow-hidden"
+                    value={product.tags}
+                  />
                 </div>
               </div>
 
@@ -297,7 +324,7 @@ function Admin() {
                           value=""
                           ref={wrapperRef}
                           accept="image/*"
-                          className="invisible absolute outline-0 border-0"
+                          className="invisible absolute -left-full top-0 outline-0 border-0"
                           onChange={onFileDrop}
                         />
                         <p className="text-primary-200 text-xs mt-2 opacity-60">
