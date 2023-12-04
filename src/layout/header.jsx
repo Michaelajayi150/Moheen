@@ -7,6 +7,7 @@ import { Logo } from "../assets";
 import * as MdIcons from "react-icons/md";
 import * as RiIcons from "react-icons/ri";
 import { useLocation } from "react-router-dom";
+import { Links } from "../assets/data";
 
 function Header() {
   const { cart, user, setOption } = useContext(AuthContext);
@@ -26,26 +27,33 @@ function Header() {
       <nav className="gradient px-6 w-full">
         <div className="flex items-center justify-between py-3 max-w-[1120px] mx-auto text-white">
           <div className="flex items-center gap-3">
-            <a href="tel:090000000" className="flex gap-1 items-center">
+            <a
+              rel="noreferrer"
+              target="_blank"
+              href={`tel: ${Links.phone}`}
+              className="flex gap-1 items-center"
+            >
               <MdIcons.MdOutlinePhone />
-              <span className="max-md:hidden">0900 000 000</span>
+              <span className="max-md:hidden">{Links.phone}</span>
             </a>
             <a
-              href="mailto:ajayimichael@gmail.com"
+              rel="noreferrer"
+              target="_blank"
+              href={`mailto: ${Links.mail}`}
               className="flex gap-1 items-center"
             >
               <MdIcons.MdMail />
-              <span className="max-md:hidden">Moheen@gmail.com</span>
+              <span className="max-md:hidden">{Links.mail}</span>
             </a>
           </div>
           <div className="flex items-center gap-3 text-xl">
-            <a href="#">
+            <a href={Links.instagram} rel="noreferrer" target="_blank">
               <RiIcons.RiInstagramLine size="1rem" />
             </a>
-            <a href="#">
-              <MdIcons.MdFacebook size="1rem" />
+            <a href={Links.facebook} rel="noreferrer" target="_blank">
+              <MdIcons.MdOutlineFacebook size="1rem" />
             </a>
-            <a href="#">
+            <a href={Links.twitter} rel="noreferrer" target="_blank">
               <RiIcons.RiTwitterXFill size="0.8rem" />
             </a>
           </div>
@@ -55,7 +63,9 @@ function Header() {
       {pathname.split("/")[1] === "register" ||
       pathname.split("/")[1] === "login" ? null : (
         <nav className="flex items-center justify-between py-3 px-6 lg:max-w-[1120px] mx-auto bg-white relative">
-          <img src={Logo} alt="Moheen Collection" />
+          <Link to="/">
+            <img src={Logo} alt="Moheen Collection" />
+          </Link>
 
           {menu ? (
             <MdIcons.MdClose
@@ -117,12 +127,12 @@ function Header() {
                 <span className="sm:hidden">Search</span>
               </div>
               {!user ? (
-                <div
+                <button
                   onClick={() => setOption("login")}
                   className="uppercase text-sm bg-primary border-2 border-white hover:bg-white hover:border-primary hover:text-primary font-semibold cursor-pointer px-6 pt-2 pb-3 rounded-md text-white"
                 >
                   Login
-                </div>
+                </button>
               ) : (
                 <Link to="/cart" className="flex items-center gap-2">
                   <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer group hover:text-secondary hover:border-secondary relative">

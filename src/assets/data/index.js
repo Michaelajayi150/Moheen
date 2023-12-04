@@ -1,25 +1,11 @@
-export const dummyData = [
-  {
-    image: "https://moyincollections.netlify.app/assets/img/wall-deco.jpg",
-    title: "Lighting",
-    amount: "2000",
-  },
-  {
-    image: "https://moyincollections.netlify.app/assets/img/wall-deco.jpg",
-    title: "Lighting",
-    amount: "2000",
-  },
-  {
-    image: "https://moyincollections.netlify.app/assets/img/wall-deco.jpg",
-    title: "Lighting",
-    amount: "2000",
-  },
-  {
-    image: "https://moyincollections.netlify.app/assets/img/wall-deco.jpg",
-    title: "Lighting",
-    amount: "2000",
-  },
-];
+export const Links = {
+  instagram: "https://www.instagram.com/themoheencollections_/",
+  facebook: "https://www.instagram.com/themoheencollections_/",
+  twitter: "https://www.instagram.com/themoheencollections_/",
+  mail: "moheencollections@gmail.com",
+  phone: "08069845271",
+  working_hours: "24 hours",
+};
 
 export const dummyReviews = [
   {

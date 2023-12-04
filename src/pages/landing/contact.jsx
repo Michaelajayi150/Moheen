@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm, ValidationError } from "@formspree/react";
 import * as MdIcons from "react-icons/md";
 import * as CiIcons from "react-icons/ci";
+import { Links } from "../../assets/data";
 
 function Contact() {
   const [form, setForm] = useState({
@@ -133,15 +134,21 @@ function Contact() {
             <MdIcons.MdOutlinePhoneInTalk className="mt-1" size="1.5rem" />
             <div className="text-neutral">
               <h4 className="text-xl">Phone number</h4>
-              <a href="tel:0900 000 000">0900 000 000</a>
+              <a rel="noreferrer" target="_blank" href={`tel: ${Links.phone}`}>
+                (+234) {Links.phone.substring(1)}
+              </a>
             </div>
           </div>
           <div className="flex gap-3 text-secondary">
             <MdIcons.MdAlternateEmail className="mt-1" size="1.5rem" />
             <div className="text-neutral">
               <h4 className="text-xl">Email address</h4>
-              <a href="mailto:info@moheencollections.com">
-                info@moheencollections.com
+              <a
+                rel="noreferrer"
+                target="_blank"
+                href={`mailto: ${Links.mail}`}
+              >
+                {Links.mail}
               </a>
             </div>
           </div>

@@ -25,12 +25,13 @@ function ProductCard({ data, image, name, price, discount }) {
               ? (price - (discount / 100) * price).toLocaleString("en-US")
               : price.toLocaleString("en-US")}
           </p>
-          <div
+          <button
+            title={`Add ${name} to cart`}
             onClick={() => setModal(true)}
-            className="text-white p-2 rounded bg-primary text-sm cursor-pointer"
+            className="text-white outline-none p-2 rounded bg-primary text-sm cursor-pointer"
           >
             <FaPlus />
-          </div>
+          </button>
         </div>
       </div>
       <ToastContainer

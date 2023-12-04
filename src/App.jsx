@@ -4,12 +4,13 @@ import LandingPage from "./pages/landing";
 import ProductPage from "./pages/product";
 
 import { createContext, useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import Sign from "./pages/sign";
 import { db } from "./middleware/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import CartPage from "./pages/cart";
 import Admin from "./pages/admin";
+import ScrollToTop from "./components/scrollToTop";
 
 export const CartContext = createContext();
 export const AuthContext = createContext();
@@ -53,10 +54,19 @@ function App() {
         <Header />
         {option && <Sign />}
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/products" element={<ProductPage />} />
+          <Route
+            element={
+              <>
+                <ScrollToTop />
+                <Outlet />
+              </>
+            }
+          >
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/products" element={<ProductPage />} />
+          </Route>
         </Routes>
         <Footer />
       </AuthContext.Provider>
