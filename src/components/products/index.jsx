@@ -45,7 +45,7 @@ function ProductCategory({ category, name, max }) {
   return (
     <section className="space-y-3">
       <h3 className="text-xl font-semibold capitalize">{name}</h3>
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 sm:gap-6 mt-10">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 sm:gap-3 mt-10">
         {loading ? (
           Array.from({ length: 4 }).map((_, id) => (
             <div

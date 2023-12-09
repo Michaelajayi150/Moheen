@@ -1,53 +1,58 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import { FaPlus } from "react-icons/fa6";
-import ExpandedCard from "./expandedCard";
+import ExpandedCard from "./expanded card";
 import { ToastContainer } from "react-toastify";
+import { cart } from "../../assets";
 
-function ProductCard({ data, image, name, price, discount }) {
+function ProductCard({ data, image, name, price, discount, popup }) {
   const [modal, setModal] = useState(false);
 
   return (
-    <div className="shadow-md rounded-md border-b-2 border-secondary overflow-hidden w-full flex flex-col">
-      <div className="bg-shades-200 min-h-[200px] flex flex-col bg-opacity-40">
+    <div className="card bg-white">
+      <picture className="bg-shades-200 min-h-[200px] flex flex-col bg-opacity-40">
+        <source srcSet={image} media="(min-width: 768px)" />
         <img
           className="w-full h-full flex-1 hover:scale-105 duration-500 cursor-pointer"
           src={image}
           alt={name}
         />
-      </div>
-      <div className="p-3 flex flex-col gap-3 flex-1">
-        <h3 className="uppercase text-lg font-semibold">{name}</h3>
-        <div className="flex items-center justify-between mt-auto">
-          <p>
-            {discount && <del>₦ {price.toLocaleString("en-US")}</del>} ₦{" "}
-            {discount
-              ? (price - (discount / 100) * price).toLocaleString("en-US")
-              : price.toLocaleString("en-US")}
-          </p>
-          <button
-            title={`Add ${name} to cart`}
-            onClick={() => setModal(true)}
-            className="text-white outline-none p-2 rounded bg-primary text-sm cursor-pointer"
-          >
-            <FaPlus />
-          </button>
+      </picture>
+
+      <div className="flex flex-col justify-between p-4">
+        <small className="uppercase mb-1">{data.type}</small>
+        <h1 className="card-title text-h1 md:text-[1.2rem] truncate">{name}</h1>
+
+        <div className="flex items-center gap-2 mb-4">
+          <h1 className="price text-h1 md:text-[1.2rem]">
+            ${discount ? discount : price}
+          </h1>
+          {discount && <del className="text-xs">${price}</del>}
         </div>
+        {!popup && (
+          <button onClick={() => setModal(true)} className="card-btn">
+            <img src={cart} alt="cart" /> Add to Cart
+          </button>
+        )}
       </div>
-      <ToastContainer
-        enableMultiContainer
-        containerId={data.id}
-        className="text-xs"
-      />
-      <div
-        className={`${
-          !modal
-            ? "scale-0 opacity-0 invisible absolute"
-            : "opacity-100 scale-100 visible fixed"
-        } top-0 left-0 z-30 w-full h-full flex items-center justify-center`}
-      >
-        <ExpandedCard item={data} {...data} setModal={setModal} />
-      </div>
+
+      {!popup && (
+        <>
+          <ToastContainer
+            enableMultiContainer
+            containerId={data.id}
+            className="text-xs"
+          />
+          <div
+            className={`${
+              !modal
+                ? "scale-0 opacity-0 invisible absolute"
+                : "opacity-100 scale-100 visible fixed"
+            } top-0 left-0 z-30 w-full h-full flex items-center justify-center duration-500`}
+          >
+            <ExpandedCard item={data} setModal={setModal} />
+          </div>
+        </>
+      )}
     </div>
   );
 }

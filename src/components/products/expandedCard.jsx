@@ -8,6 +8,7 @@ import { collection, getDocs, query, setDoc, where } from "firebase/firestore";
 
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
+import ProductCard from "./productCard";
 
 function ExpandedCard({
   image,
@@ -69,10 +70,7 @@ function ExpandedCard({
     publicKey: "pk_test_7602f6ead5a21318837c96878fbe20eb35a34f16",
     reference: new Date().getTime().toString(),
     email: user?.email,
-    amount:
-      (discount
-        ? price * quantity - (discount / 100) * (price * quantity)
-        : price * quantity) * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
+    amount: (discount ? discount * quantity : price * quantity) * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
     currency: "NGN",
   });
 
@@ -100,9 +98,7 @@ function ExpandedCard({
         className="absolute bg-neutral opacity-70 w-full h-full cursor-pointer"
       />
       <div className="relative z-10 rounded-md border-b-2 border-secondary overflow-hidden w-10/12 sm:w-11/12 md:w-10/12 md:max-w-[700px] min-w-[300px] mx-auto bg-white flex max-sm:flex-col gap-2">
-        <div className="bg-shades-200 sm:min-h-[200px] w-full flex flex-col bg-opacity-40">
-          <img className="w-full h-full" src={image} alt={name} />
-        </div>
+        <ProductCard {...item} data={item} popup />
         <div className="px-6 md:px-3 py-6 space-y-3 w-full">
           <div className="flex gap-3 items-center">
             {tags.map((tag, id) => (
@@ -154,16 +150,13 @@ function ExpandedCard({
             </div>
 
             <p>
-              {discount && (
-                <del>₦ {(price * quantity).toLocaleString("en-US")}</del>
-              )}{" "}
               ₦{" "}
               {discount
-                ? (
-                    price * quantity -
-                    (discount / 100) * (price * quantity)
-                  ).toLocaleString("en-US")
-                : (price * quantity).toLocaleString("en-US")}
+                ? (discount * quantity).toLocaleString("en-US")
+                : (price * quantity).toLocaleString("en-US")}{" "}
+              {discount && (
+                <del>₦ {(price * quantity).toLocaleString("en-US")}</del>
+              )}
             </p>
           </div>
 
