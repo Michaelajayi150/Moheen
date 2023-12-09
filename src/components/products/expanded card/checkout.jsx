@@ -137,8 +137,7 @@ function Checkout({
           <input
             className="border border-primary px-3 py-2 rounded w-full"
             required="required"
-            size="30"
-            type="number"
+            type="tel"
             name="phone"
             id="checkout_shipping_address_phone"
             autoComplete="phone"
@@ -241,25 +240,23 @@ function Checkout({
 
           <div className="flex justify-between w-full items-center border-y border-neutral py-2">
             <p>Total</p>
-            <p>
-              {size === null ? (
-                <p>
-                  ₦{" "}
-                  {(discount
-                    ? discount * quantity + checkout.fee
-                    : price * quantity + checkout.fee
-                  ).toLocaleString("en-US")}
-                </p>
-              ) : (
-                <p>
-                  ₦
-                  {(sizes[size]?.discount
-                    ? sizes[size]?.discount * quantity + checkout.fee
-                    : sizes[size]?.price * quantity + checkout.fee
-                  ).toLocaleString("en-US")}
-                </p>
-              )}
-            </p>
+            {size === null ? (
+              <p>
+                ₦{" "}
+                {(discount
+                  ? discount * quantity + checkout.fee
+                  : price * quantity + checkout.fee
+                ).toLocaleString("en-US")}
+              </p>
+            ) : (
+              <p>
+                ₦
+                {(sizes[size]?.discount
+                  ? sizes[size]?.discount * quantity + checkout.fee
+                  : sizes[size]?.price * quantity + checkout.fee
+                ).toLocaleString("en-US")}
+              </p>
+            )}
           </div>
         </div>
       </div>
