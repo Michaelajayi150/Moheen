@@ -1,8 +1,41 @@
 /* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
 import { cart } from "../../../assets";
 import CitySelector from "../../citySelector";
 
 function ProductForm({ clip, next, checkout, setCheckout }) {
+  const [error, setError] = useState(false);
+  const user =
+    JSON.parse(sessionStorage.getItem("moheen-shop-checkout-details")) || null;
+
+  useEffect(() => {
+    if (user !== null) {
+      const form = Object.keys(user);
+      form.map((i) => {
+        setCheckout((prev) => ({
+          ...prev,
+          [i]: user[i],
+        }));
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSubmit = () => {
+    if (
+      checkout.firstName !== "" &&
+      checkout.lastName !== "" &&
+      checkout.email !== "" &&
+      checkout.address !== "" &&
+      checkout.state !== ""
+    ) {
+      setError(false);
+      next();
+    } else {
+      setError(true);
+    }
+  };
+
   return (
     <div
       className={`${
@@ -171,7 +204,10 @@ function ProductForm({ clip, next, checkout, setCheckout }) {
           <CitySelector state={checkout} setCheckout={setCheckout} />
         </div>
       </form>
-      <button onClick={next} className="card-btn ml-auto">
+      {error && (
+        <p className="text-red-500 text-sm"> Please fill out all information</p>
+      )}
+      <button onClick={handleSubmit} className="card-btn ml-auto">
         <img src={cart} alt="cart" /> Next
       </button>
     </div>

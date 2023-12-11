@@ -25,7 +25,6 @@ function Checkout({
   const [quantity, setQuantity] = useState(1);
   const [disabled, setDisabled] = useState(false);
   const [saveDetails, setSaveDetails] = useState(false);
-  const [error, setError] = useState(false);
 
   const { user, setOption, setCart } = useContext(AuthContext);
 
@@ -38,7 +37,7 @@ function Checkout({
       let data = doc.data();
       data.cart = [
         ...data.cart,
-        { id: id, type: type, quantity, paid, delivery: { ...checkout } },
+        { id: id, type: type, quantity, paid, size, delivery: { ...checkout } },
       ];
 
       setDoc(doc.ref, { cart: data.cart, details: checkout }, { merge: true })
@@ -81,7 +80,14 @@ function Checkout({
     publicKey: "pk_test_7602f6ead5a21318837c96878fbe20eb35a34f16",
     reference: new Date().getTime().toString(),
     email: user?.email,
-    amount: (discount ? discount * quantity : price * quantity) * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
+    amount:
+      (size === null
+        ? discount
+          ? discount * quantity
+          : price * quantity
+        : sizes[size].discount
+        ? sizes[size].discount * quantity
+        : sizes[size]?.price * quantity) * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
     currency: "NGN",
   });
 
@@ -89,26 +95,15 @@ function Checkout({
     if (!user) {
       setOption("login");
     } else {
-      if (
-        checkout.firstName !== "" &&
-        checkout.lastName !== "" &&
-        checkout.phone !== "" &&
-        checkout.address !== "" &&
-        checkout.state !== ""
-      ) {
-        setDisabled(true);
-        setError(false);
-        let paid = false;
+      setDisabled(true);
+      let paid = false;
 
-        if (event === "pay") {
-          console.log("Load payment platform");
-          initializePayment(onSuccess, onClose);
-        } else {
-          console.log("Add to cart");
-          addToCart(paid);
-        }
+      if (event === "pay") {
+        console.log("Load payment platform");
+        initializePayment(onSuccess, onClose);
       } else {
-        setError(true);
+        console.log("Add to cart");
+        addToCart(paid);
       }
     }
   };
@@ -260,9 +255,7 @@ function Checkout({
           </div>
         </div>
       </div>
-      {error && (
-        <p className="text-red-500 text-sm"> Please fill out all information</p>
-      )}
+
       <div className="flex max-sm:flex-wrap gap-3 justify-center uppercase text-white">
         <button
           disabled={disabled}

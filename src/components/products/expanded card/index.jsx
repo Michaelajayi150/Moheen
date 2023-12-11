@@ -61,6 +61,7 @@ function ExpandedCard({ setModal, item }) {
             {...item}
             checkout={form}
             setCheckout={setForm}
+            setModal={setModal}
           />
         )}
       </div>

@@ -9,8 +9,8 @@ import Sign from "./pages/sign";
 import { db } from "./middleware/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import CartPage from "./pages/cart";
-import Admin from "./pages/admin";
 import ScrollToTop from "./components/scrollToTop";
+import Admin from "./pages/admin";
 
 export const CartContext = createContext();
 export const AuthContext = createContext();
@@ -28,11 +28,17 @@ function App() {
       // doc.data() is never undefined for query doc snapshots
       const data = doc.data();
       setCart(data.cart);
+      if (data.details) {
+        sessionStorage.setItem(
+          "moheen-shop-checkout-details",
+          JSON.stringify(data.details)
+        );
+      }
     });
   }
 
   useEffect(() => {
-    const isUser = JSON.parse(localStorage.getItem("user_id"));
+    const isUser = JSON.parse(localStorage.getItem("moheen-shop-user-id"));
 
     if (isUser !== null) {
       setUserID(isUser);
@@ -42,7 +48,7 @@ function App() {
   }, []);
 
   const setUser = (value) => {
-    localStorage.setItem("user_id", JSON.stringify(value));
+    localStorage.setItem("moheen-shop-user-id", JSON.stringify(value));
     setUserID(value);
   };
 
@@ -63,7 +69,7 @@ function App() {
             }
           >
             <Route path="/" element={<LandingPage />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/*" element={<Admin />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/products" element={<ProductPage />} />
           </Route>

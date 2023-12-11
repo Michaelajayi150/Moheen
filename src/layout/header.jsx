@@ -133,6 +133,13 @@ function Header() {
                 >
                   Login
                 </button>
+              ) : user?.email === "moheenadmin@gmail.com" ? (
+                <Link to="/admin" className="flex items-center gap-2">
+                  <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer group hover:text-secondary hover:border-secondary relative">
+                    <MdIcons.MdOutlineShoppingBag size="1.2rem" />
+                  </div>
+                  <span className="sm:hidden">Dashboard</span>
+                </Link>
               ) : (
                 <Link to="/cart" className="flex items-center gap-2">
                   <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer group hover:text-secondary hover:border-secondary relative">

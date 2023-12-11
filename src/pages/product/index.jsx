@@ -1,16 +1,10 @@
 import { useState } from "react";
 import ProductCategory from "../../components/products";
 import HeroSection from "./hero";
+import { categories } from "../../assets/data";
 
 function ProductPage() {
   const [filter, setFilter] = useState("");
-
-  const categories = [
-    { name: "Home Decoration", target: "decoration" },
-    { name: "Toilet Accessories", target: "toiletries" },
-    { name: "Towels", target: "towels" },
-    { name: "Beddings and accessories", target: "bedding" },
-  ];
 
   return (
     <>

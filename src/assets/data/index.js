@@ -7,6 +7,18 @@ export const Links = {
   working_hours: "24 hours",
 };
 
+export const deliveryTax = [
+  { state: "Lagos", fee: 400 },
+  { state: "Ogun", fee: 300 },
+];
+
+export const categories = [
+  { name: "Home Decoration", target: "decoration" },
+  { name: "Toilet Accessories", target: "toiletries" },
+  { name: "Towels", target: "towels" },
+  { name: "Beddings and accessories", target: "bedding" },
+];
+
 export const dummyReviews = [
   {
     name: "Sandra Kingston",
