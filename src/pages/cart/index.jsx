@@ -10,16 +10,20 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
+
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { deliveryTax } from "../../assets/data";
+import CartItem from "../../components/cart";
+import CartLocation from "../../components/cart/cartLocation";
+import { usePaystackPayment } from "react-paystack";
 
 function CartPage() {
   const [carts, setCarts] = useState([]);
+  const [status, setStatus] = useState("pending");
   const [totalAmount, setTotalAmount] = useState(0);
   const [deliveryAmount, setDeliveryAmount] = useState(0);
-  const [deleted, setDelete] = useState(null);
   const { cart, user, setUser } = useContext(AuthContext);
   const info =
     JSON.parse(sessionStorage.getItem("moheen-shop-checkout-details")) || null;
@@ -56,7 +60,10 @@ function CartPage() {
         // Check if cart details state is the same
         if (!deliveryDestination.includes(item?.delivery?.state)) {
           deliveryTax.forEach((deliverer) => {
-            if (item?.delivery?.state === deliverer.state) {
+            if (
+              item?.delivery?.state === deliverer.state &&
+              item?.status === "pending"
+            ) {
               delivery += deliverer.fee;
               deliveryDestination.push(deliverer.state);
             }
@@ -95,7 +102,7 @@ function CartPage() {
   async function updateCart(index, name, value) {
     const newCarts = carts.map((cart, id) => {
       if (id === index) {
-        return { ...cart, [name]: parseInt(value) };
+        return { ...cart, [name]: value };
       }
       return cart;
     });
@@ -108,11 +115,22 @@ function CartPage() {
       // doc.data() is never undefined for query doc snapshots
       setDoc(doc.ref, { cart: newCarts }, { merge: true })
         .then(() => {
-          toast.success("Item has been deleted from cart");
+          toast.success(
+            name !== "paid"
+              ? "Item has been updated from cart"
+              : "Your payment have been received, you will be contacted shortly"
+          );
         })
         .catch((err) => {
           console.log(err);
-          toast.error("Error. try again");
+
+          if (name === "paid") {
+            toast.success(
+              "Your payment have been received, please refresh to update cart"
+            );
+          } else {
+            toast.error("Error. try again");
+          }
         });
     });
   }
@@ -132,74 +150,112 @@ function CartPage() {
     });
   }, [cart]);
 
+  const paymentKey = import.meta.env.VITE_CLIENT_PAYSTACK_API_KEY;
+
+  const initializePayment = usePaystackPayment({
+    publicKey: paymentKey,
+    reference: new Date().getTime().toString(),
+    email: user?.email,
+    amount: (totalAmount + deliveryAmount) * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
+    currency: "NGN",
+  });
+
+  // you can call this function anything
+  const onSuccess = (reference) => {
+    // Implementation for whatever you want to do with reference and after success call.
+    console.log(reference);
+    carts.forEach((item, id) => {
+      if (!item.paid) {
+        updateCart(id, "paid", true);
+      }
+    });
+  };
+
+  // you can call this function anything
+  const onClose = () => {
+    // implementation for  whatever you want to do when the Paystack dialog closed.
+    toast.error("User cancelled payment");
+  };
+
   return (
     <section className="bg-shades-100 pt-8 pb-16 xs:py-16 px-3 xs:px-6 space-y-8">
       <div className="max-w-[1120px] mx-auto flex flex-col gap-3">
-        <div className="bg-white p-4 xs:p-8 w-full flex flex-wrap gap-8 justify-between">
-          <div>
-            <h2 className="text-xl font-semibold">Personal Information</h2>
-            <div className="space-y-3 mt-2">
-              <div className="flex justify-between items-center gap-4">
-                <h3>Name:</h3>
-                <span>
-                  {info?.firstName
-                    ? `${info.firstName} ${info.lastName}`
-                    : "Not Set"}
-                </span>
+        <div className="bg-white p-4 xs:p-8 w-full">
+          <div className="flex flex-wrap gap-8 justify-between">
+            <div>
+              <h2 className="text-xl font-semibold">Personal Information</h2>
+              <div className="space-y-3 mt-2">
+                <div className="flex justify-between items-center gap-4">
+                  <h3>Name:</h3>
+                  <span>
+                    {info?.firstName
+                      ? `${info.firstName} ${info.lastName}`
+                      : "Not Set"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold">Shipping Address</h2>
+              <div className="space-y-3 mt-2">
+                {info?.state ? (
+                  <>
+                    {`${info.address}${info?.city && `, ${info.city}`}`}
+                    <br />
+                    {`${info.state}, Nigeria`}
+                  </>
+                ) : (
+                  "Not Set"
+                )}
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold">Contact Information</h2>
+              <div className="space-y-3 mt-2">
+                <div className="flex justify-between items-center gap-4">
+                  <h3>E-mail:</h3>
+                  <span className="max-w-[18ch] xs:max-w-full truncate">
+                    {info?.email ? info.email : "Not Set"}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center gap-4">
+                  <h3>Phone:</h3>
+                  <span>{info?.phone ? info.phone : "Not Set"}</span>
+                </div>
               </div>
             </div>
           </div>
-
-          <div>
-            <h2 className="text-xl font-semibold">Shipping Address</h2>
-            <div className="space-y-3 mt-2">
-              {info?.state ? (
-                <>
-                  {`${info.address}${info?.city && `, ${info.city}`}`}
-                  <br />
-                  {`${info.state}, Nigeria`}
-                </>
-              ) : (
-                "Not Set"
-              )}
-            </div>
+          <div
+            onClick={() => {
+              localStorage.removeItem("moheen-shop-user-id");
+              sessionStorage.removeItem("moheen-shop-checkout-details");
+              setUser(null);
+              navigate("/");
+            }}
+            className="bg-red-500 hover:bg-red-700 duration-300 text-white px-6 pt-2 pb-3 rounded block text-center w-full sm:w-fit ml-auto mt-4 cursor-pointer"
+          >
+            Log out
           </div>
-
-          <div>
-            <h2 className="text-xl font-semibold">Contact Information</h2>
-            <div className="space-y-3 mt-2">
-              <div className="flex justify-between items-center gap-4">
-                <h3>E-mail:</h3>
-                <span className="max-w-[18ch] xs:max-w-full truncate">
-                  {info?.email ? info.email : "Not Set"}
-                </span>
-              </div>
-              <div className="flex justify-between items-center gap-4">
-                <h3>Phone:</h3>
-                <span>{info?.phone ? info.phone : "Not Set"}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          onClick={() => {
-            localStorage.removeItem("moheen-shop-user-id");
-            sessionStorage.removeItem("moheen-shop-checkout-details");
-            setUser(null);
-            navigate("/");
-          }}
-          className="bg-red-500 hover:bg-red-700 duration-300 text-white px-6 pt-3 pb-4 rounded block  text-center w-full sm:w-fit ml-auto mt-3 cursor-pointer"
-        >
-          Log out
         </div>
       </div>
 
       <div className="max-w-[1120px] mx-auto flex max-md:flex-col items-start gap-8">
-        <div className="w-full">
-          <h2 className="text-xl font-semibold mb-4">Cart</h2>
+        <div className="w-full space-y-3">
+          <div className="flex justify-between gap-3 items-start">
+            <h2 className="text-xl font-semibold mb-4">Cart</h2>
+            <select
+              className="p-2 border border-neutral cursor-pointer"
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              <option value="pending">Pending</option>
+              <option value="on-going">Ongoing</option>
+              <option value="delivered">Delivered</option>
+            </select>
+          </div>
           <div className="bg-white">
-            {carts.length <= 0 ? (
+            {carts.filter((cart) => cart.status === status).length <= 0 ? (
               <div className="flex max-sm:flex-col items-center gap-6 p-8">
                 <div className="w-full">
                   <img src={NoCart} alt="no item" />
@@ -219,127 +275,35 @@ function CartPage() {
               </div>
             ) : (
               <div className="flex flex-col gap-6 pl-4 pr-6 py-4">
-                {carts.map((item, id) => (
-                  <div
-                    key={id}
-                    className={`w-full flex max-sm:flex-col md:flex-row sm:items-stretch gap-6 ${
-                      id < carts.length - 1
-                        ? "border-b border-shades-200 pb-6"
-                        : ""
-                    } text-gray-400`}
-                  >
-                    <div className="sm:max-w-[200px] max-h-[250px] overflow-hidden">
-                      <img
-                        className="w-full object-bottom h-full"
-                        src={item.image}
-                        alt={`${item.name} from Moheen Store`}
+                {carts
+                  .filter((cart) => cart.status === status)
+                  .map((item, id) => (
+                    <div
+                      key={id}
+                      className={
+                        id <
+                        carts.filter((cart) => cart.status === status).length -
+                          1
+                          ? "border-b border-shades-200 pb-6"
+                          : ""
+                      }
+                    >
+                      <div className="w-full flex max-sm:flex-col md:flex-row sm:items-stretch gap-6 text-gray-400 mb-3">
+                        <CartItem
+                          item={item}
+                          deleteCart={() => deleteCart(id)}
+                          updateCart={(name, value) =>
+                            updateCart(id, name, value)
+                          }
+                        />
+                      </div>
+                      <CartLocation
+                        {...item.delivery}
+                        status={item?.status}
+                        paid={item?.paid}
                       />
                     </div>
-                    <div className="w-full">
-                      <div className="text-black flex items-center justify-between gap-2">
-                        <h3 className="text-lg font-semibold capitalize">
-                          {item.name}
-                        </h3>
-
-                        <p className="text-sm text-neutral">
-                          ₦{" "}
-                          {item?.size
-                            ? (item.sizes[item.size]?.discount
-                                ? item.sizes[item.size]?.discount *
-                                  item.quantity
-                                : item.sizes[item.size]?.price * item.quantity
-                              ).toLocaleString("en-US")
-                            : (item.discount
-                                ? item.discount * item.quantity
-                                : item.price * item.quantity
-                              ).toLocaleString("en-US")}
-                        </p>
-                      </div>
-
-                      <div className="relative pb-1">
-                        <h4 className="capitalize">{item.type}</h4>
-                        {item.tags.map((tag, id) => (
-                          <span key={tag + id}>
-                            {tag}
-                            {id < item.tags.length - 1 && "/"}
-                          </span>
-                        ))}
-                        <p className="text-sm">{item.description}</p>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        {item.sizes && (
-                          <div className="flex items-center gap-2">
-                            <label htmlFor={`size_${id}`}>Size</label>
-                            <select
-                              id={`size_${id}`}
-                              onChange={(e) =>
-                                updateCart(id, "size", e.target.value)
-                              }
-                              className="pl-2 py-1 text-center"
-                            >
-                              {item.sizes.map((option, i) => (
-                                <option
-                                  key={option.size}
-                                  selected={i === item.size}
-                                  value={i}
-                                >
-                                  {option.size}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
-
-                        <div className="flex items-center gap-2">
-                          <label htmlFor={`quantity_${id}`}>Quantity</label>
-                          <select
-                            id={`quantity_${id}`}
-                            onChange={(e) =>
-                              updateCart(id, "quantity", e.target.value)
-                            }
-                            value={item.quantity}
-                            className="pl-2 py-1 text-center"
-                          >
-                            {new Array(10).fill().map((_, i) => (
-                              <option key={`${id} ${i}`} value={i + 1}>
-                                {i + 1}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                      {!item.paid && (
-                        <>
-                          <p
-                            onClick={() => setDelete(id)}
-                            className="pt-3 w-fit text-sm underline underline-offset-[6px] cursor-pointer"
-                          >
-                            Remove
-                          </p>
-                          {deleted === id && (
-                            <p className="text-sm pt-3">
-                              Do you really want to delete?{" "}
-                              <span
-                                className="text-red-500 cursor-pointer underline underline-offset-[6px]"
-                                onClick={() => deleteCart(id)}
-                              >
-                                yes
-                              </span>{" "}
-                              /{" "}
-                              <span
-                                className="text-green-500 cursor-pointer underline underline-offset-[6px]"
-                                onClick={() => setDelete(null)}
-                              >
-                                no
-                              </span>
-                            </p>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             )}
           </div>
@@ -379,7 +343,10 @@ function CartPage() {
             </div>
           </div>
 
-          <div className="bg-neutral hover:bg-secondary duration-300 text-white px-6 pt-4 pb-5 rounded-full block  text-center w-full cursor-pointer">
+          <div
+            onClick={() => initializePayment(onSuccess, onClose)}
+            className="bg-neutral hover:bg-secondary duration-300 text-white px-6 pt-4 pb-5 rounded-full block  text-center w-full cursor-pointer"
+          >
             Checkout
           </div>
 
@@ -391,6 +358,7 @@ function CartPage() {
           </Link>
         </div>
       </div>
+      <ToastContainer limit={1} />
     </section>
   );
 }

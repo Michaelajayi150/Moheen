@@ -37,25 +37,37 @@ function Checkout({
       let data = doc.data();
       data.cart = [
         ...data.cart,
-        { id: id, type: type, quantity, paid, size, delivery: { ...checkout } },
+        {
+          id: id,
+          type: type,
+          quantity,
+          paid,
+          size,
+          status: paid ? "ongoing" : "pending",
+          deliveryDate: "",
+          delivery: { ...checkout },
+          cid: data.cart.length + 1,
+        },
       ];
 
-      setDoc(doc.ref, { cart: data.cart, details: checkout }, { merge: true })
+      setDoc(
+        doc.ref,
+        { cart: data.cart, details: saveDetails ? checkout : null },
+        { merge: true }
+      )
         .then(() => {
           setDisabled(false);
           if (saveDetails) {
-            toast.success("Cart has been added and details saved", {
-              containerId: id,
-            });
+            toast.success("Cart has been added and details saved");
           } else {
-            toast.success("Cart has been added", { containerId: id });
+            toast.success("Cart has been added");
           }
           setCart(data.cart);
           setModal(false);
         })
         .catch((err) => {
           console.log(err);
-          toast.error("Error. try again", { containerId: id });
+          toast.error("Error. try again");
           setDisabled(false);
         });
     });
@@ -76,8 +88,10 @@ function Checkout({
     console.log("closed");
   };
 
+  const paymentKey = import.meta.env.VITE_CLIENT_PAYSTACK_API_KEY;
+
   const initializePayment = usePaystackPayment({
-    publicKey: "pk_test_7602f6ead5a21318837c96878fbe20eb35a34f16",
+    publicKey: paymentKey,
     reference: new Date().getTime().toString(),
     email: user?.email,
     amount:

@@ -2,6 +2,7 @@ import { AuthContext } from "../../App";
 import { useContext, useState } from "react";
 import { auth } from "../../middleware/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import Preloader from "../../components/preloader";
 
 function Login() {
   const { setUser, setOption } = useContext(AuthContext);
@@ -9,6 +10,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [disabled, setDisabled] = useState(false);
+  const [modal, setModal] = useState(false);
 
   const [error, setError] = useState({
     email: "",
@@ -65,6 +67,7 @@ function Login() {
     }
 
     setDisabled(true);
+    setModal(true);
 
     await signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
@@ -73,6 +76,7 @@ function Login() {
         console.log(user);
         setUser(user);
         setDisabled(false);
+        setModal(false);
         setOption("");
         // ...
       })
@@ -80,6 +84,7 @@ function Login() {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
+        setModal(false);
         setDisabled(false);
         // ..
       });
@@ -90,6 +95,7 @@ function Login() {
       onSubmit={onSubmit}
       className="w-full flex flex-col gap-3 justify-center"
     >
+      <Preloader modal={modal} />
       <div className="flex flex-col gap-2">
         <label htmlFor="email1">Email</label>
         <input

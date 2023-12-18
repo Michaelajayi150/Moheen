@@ -3,11 +3,13 @@ import { useContext, useState } from "react";
 import { auth, db } from "../../middleware/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
+import Preloader from "../../components/preloader";
 
 function Register() {
   const { setUser, setOption } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
+  const [modal, setModal] = useState(false);
   const [password, setPassword] = useState("");
   const [cpassword, setCPassword] = useState("");
   const [disabled, setDisabled] = useState(false);
@@ -81,6 +83,7 @@ function Register() {
     }
 
     setDisabled(true);
+    setModal(true);
 
     await createUserWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
@@ -96,6 +99,7 @@ function Register() {
           cart: [],
         });
         setDisabled(false);
+        setModal(false);
         setOption("");
         // ...
       })
@@ -103,6 +107,7 @@ function Register() {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
+        setModal(false);
         setDisabled(false);
         // ..
       });
@@ -113,6 +118,7 @@ function Register() {
       onSubmit={onSubmit}
       className="w-full flex flex-col gap-3 justify-center"
     >
+      <Preloader modal={modal} />
       <div className="flex flex-col gap-2">
         <label htmlFor="email2">Email</label>
         <input

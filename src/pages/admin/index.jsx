@@ -4,6 +4,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import UploadProduct from "./upload";
 import TotalProduct from "./total-product";
 import { Link } from "react-router-dom";
+import Delivery from "./delivery";
 
 function Admin() {
   const { setUser } = useContext(AuthContext);
@@ -30,7 +31,7 @@ function Admin() {
           <Routes>
             <Route path="/" element={<TotalProduct />} />
             <Route path="/upload-product" element={<UploadProduct />} />
-            <Route path="/deliveries" element={<>Total Upload</>} />
+            <Route path="/deliveries" element={<Delivery />} />
           </Routes>
         </div>
         <div className="w-full md:max-w-[300px]">
@@ -39,7 +40,7 @@ function Admin() {
             <div className="flex flex-col gap-3 mt-4">
               <Link to="/admin">All Products</Link>
               <Link to="/admin/upload-product">Upload Product</Link>
-              <Link to="/admin/deliveries">Deliveries</Link>
+              <Link to="/admin/deliveries">Latest Orders</Link>
             </div>
           </div>
           <div

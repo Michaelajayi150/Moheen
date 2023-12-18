@@ -2,6 +2,7 @@ import ProductCard from "./productCard";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../middleware/firebase";
 import { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
 
 // eslint-disable-next-line react/prop-types
 function ProductCategory({ category, name, max }) {
@@ -67,6 +68,7 @@ function ProductCategory({ category, name, max }) {
           <p>No item uploaded yet</p>
         )}
       </div>
+      <ToastContainer className="text-xs" limit={1} />
     </section>
   );
 }

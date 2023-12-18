@@ -28,7 +28,7 @@ function App() {
       // doc.data() is never undefined for query doc snapshots
       const data = doc.data();
       setCart(data.cart);
-      if (data.details) {
+      if (data.details || data.details === null) {
         sessionStorage.setItem(
           "moheen-shop-checkout-details",
           JSON.stringify(data.details)
