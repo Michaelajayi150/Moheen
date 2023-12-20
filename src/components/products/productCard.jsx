@@ -42,7 +42,7 @@ function ProductCard({ data, image, name, price, discount, popup }) {
               : "opacity-100 scale-100 visible fixed"
           } top-0 left-0 z-30 w-full h-full flex items-center justify-center duration-500`}
         >
-          <ExpandedCard item={data} setModal={setModal} />
+          {modal && <ExpandedCard item={data} setModal={setModal} />}
         </div>
       )}
     </div>

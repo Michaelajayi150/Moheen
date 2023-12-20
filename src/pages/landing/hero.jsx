@@ -11,7 +11,7 @@ function HeroSection() {
         <h3 className="text-lg md:text-2xl">ENJOY YOUR SHOPPING WITH US!</h3>
         <h1 className="text-2xl md:text-4xl">SHOPPING AT MOHEEN COLLECTIONS</h1>
         <Link
-          to="/products"
+          to="/products?type="
           className="uppercase bg-primary hover:bg-white hover:text-primary font-semibold cursor-pointer px-6 pt-2 pb-3 rounded"
         >
           Shop Now

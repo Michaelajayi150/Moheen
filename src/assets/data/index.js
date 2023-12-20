@@ -8,8 +8,16 @@ export const Links = {
 };
 
 export const deliveryTax = [
-  { state: "Lagos", fee: 400 },
-  { state: "Ogun", fee: 300 },
+  [{ state: "Lagos", fee: 400 }],
+  [
+    { state: "Ondo", fee: 400 },
+    { state: "Ogun", fee: 400 },
+    { state: "Ekiti", fee: 400 },
+    { state: "Edo", fee: 400 },
+    { state: "Osun", fee: 400 },
+    { state: "Lagos", fee: 400 },
+    { state: "Lagos", fee: 400 },
+],
 ];
 
 export const categories = [

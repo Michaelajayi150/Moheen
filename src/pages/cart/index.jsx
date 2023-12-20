@@ -18,11 +18,14 @@ import { deliveryTax } from "../../assets/data";
 import CartItem from "../../components/cart";
 import CartLocation from "../../components/cart/cartLocation";
 import { usePaystackPayment } from "react-paystack";
+import Preloader from "../../components/cart/preloader";
 
 function CartPage() {
   const [carts, setCarts] = useState([]);
   const [status, setStatus] = useState("pending");
   const [totalAmount, setTotalAmount] = useState(0);
+  const [loading, setLoading] = useState(false);
+
   const [deliveryAmount, setDeliveryAmount] = useState(0);
   const { cart, user, setUser } = useContext(AuthContext);
   const info =
@@ -77,6 +80,7 @@ function CartPage() {
   }, [carts]);
 
   async function deleteCart(index) {
+    setLoading(true);
     let newCarts = Array.from(carts);
     newCarts.splice(index, 1);
 
@@ -84,6 +88,7 @@ function CartPage() {
     const q = query(collection(db, "users"), where("uid", "==", user?.uid));
 
     const querySnapshot = await getDocs(q);
+
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       setDoc(doc.ref, { cart: newCarts }, { merge: true })
@@ -91,15 +96,18 @@ function CartPage() {
           toast.success("Item has been deleted from cart", {
             containerId: index,
           });
+          setLoading(false);
         })
         .catch((err) => {
           console.log(err);
           toast.error("Error. try again", { containerId: index });
+          setLoading(false);
         });
     });
   }
 
   async function updateCart(index, name, value) {
+    setLoading(true);
     const newCarts = carts.map((cart, id) => {
       if (id === index) {
         return { ...cart, [name]: value };
@@ -107,7 +115,6 @@ function CartPage() {
       return cart;
     });
 
-    setCarts(newCarts);
     const q = query(collection(db, "users"), where("uid", "==", user?.uid));
 
     const querySnapshot = await getDocs(q);
@@ -120,6 +127,8 @@ function CartPage() {
               ? "Item has been updated from cart"
               : "Your payment have been received, you will be contacted shortly"
           );
+
+          setLoading(false);
         })
         .catch((err) => {
           console.log(err);
@@ -131,12 +140,18 @@ function CartPage() {
           } else {
             toast.error("Error. try again");
           }
+
+          setLoading(false);
         });
     });
+
+    setCarts(newCarts);
   }
 
   useEffect(() => {
+    setLoading(true);
     setCarts([]);
+
     cart.forEach(async (item) => {
       const docRef = doc(db, item.type, item.id);
       const docSnap = await getDoc(docRef);
@@ -147,6 +162,8 @@ function CartPage() {
         // docSnap.data() will be undefined in this case
         console.log("No such document!");
       }
+
+      setLoading(false);
     });
   }, [cart]);
 
@@ -217,7 +234,9 @@ function CartPage() {
                 <div className="flex justify-between items-center gap-4">
                   <h3>E-mail:</h3>
                   <span className="max-w-[18ch] xs:max-w-full truncate">
-                    {info?.email ? info.email : "Not Set"}
+                    {info?.email
+                      ? info.email
+                      : user && user?.email && user?.email}
                   </span>
                 </div>
                 <div className="flex justify-between items-center gap-4">
@@ -254,7 +273,8 @@ function CartPage() {
               <option value="delivered">Delivered</option>
             </select>
           </div>
-          <div className="bg-white">
+          <div className="bg-white relative">
+            <Preloader modal={loading} />
             {carts.filter((cart) => cart.status === status).length <= 0 ? (
               <div className="flex max-sm:flex-col items-center gap-6 p-8">
                 <div className="w-full">
@@ -351,7 +371,7 @@ function CartPage() {
           </div>
 
           <Link
-            to="/products"
+            to="/products?type="
             className="bg-shades-200 hover:bg-secondary duration-300 text-white px-6 pt-4 pb-5 rounded-full block  text-center w-full cursor-pointer"
           >
             Continue Shopping

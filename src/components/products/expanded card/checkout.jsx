@@ -8,6 +8,7 @@ import { collection, getDocs, query, setDoc, where } from "firebase/firestore";
 import { cart } from "../../../assets";
 import { AuthContext } from "../../../App";
 import { db } from "../../../middleware/firebase";
+import Preloader from "../../preloader";
 
 function Checkout({
   type,
@@ -25,10 +26,12 @@ function Checkout({
   const [quantity, setQuantity] = useState(1);
   const [disabled, setDisabled] = useState(false);
   const [saveDetails, setSaveDetails] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { user, setOption, setCart } = useContext(AuthContext);
 
   async function addToCart(paid) {
+    setLoading(true);
     const q = query(collection(db, "users"), where("uid", "==", user?.uid));
 
     const querySnapshot = await getDocs(q);
@@ -57,6 +60,8 @@ function Checkout({
       )
         .then(() => {
           setDisabled(false);
+          setLoading(false);
+
           if (saveDetails) {
             toast.success("Cart has been added and details saved");
           } else {
@@ -69,6 +74,7 @@ function Checkout({
           console.log(err);
           toast.error("Error. try again");
           setDisabled(false);
+          setLoading(false);
         });
     });
   }
@@ -128,6 +134,7 @@ function Checkout({
         clip ? "visible relative py-16 !pb-8" : "invisible absolute"
       } sm:relative sm:opacity-100 sm:visible pr-8 pl-6 sm:py-8 space-y-3`}
     >
+      <Preloader modal={loading} />
       <div
         onClick={back}
         className="bg-primary px-4 py-2 border rounded-full border-white text-white w-fit cursor-pointer text-xs hover:text-primary hover:border-primary hover:bg-white flex justify-center items-center gap-1 duration-500"

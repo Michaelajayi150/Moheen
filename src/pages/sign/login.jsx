@@ -52,6 +52,10 @@ function Login() {
   };
 
   const onSubmit = async (e) => {
+    setError({
+      email: "",
+      password: "",
+    });
     e.preventDefault();
 
     const isEmailValid = email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)
@@ -83,7 +87,14 @@ function Login() {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
+        if (errorCode === "auth/wrong-password") {
+          setError((prev) => ({ ...prev, password: "Wrong password" }));
+        } else if (errorCode === "auth/user-not-found") {
+          setError((prev) => ({ ...prev, email: "User not found" }));
+        } else {
+          console.log(errorCode);
+          console.log(errorMessage);
+        }
         setModal(false);
         setDisabled(false);
         // ..

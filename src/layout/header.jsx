@@ -7,7 +7,7 @@ import { Logo } from "../assets";
 import * as MdIcons from "react-icons/md";
 import * as RiIcons from "react-icons/ri";
 import { useLocation } from "react-router-dom";
-import { Links } from "../assets/data";
+import { Links, categories } from "../assets/data";
 
 function Header() {
   const { cart, user, setOption } = useContext(AuthContext);
@@ -18,7 +18,7 @@ function Header() {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "About", href: "/#about" },
-    { name: "Products", href: "/#products" },
+    { name: "Products", href: "/products/" },
     { name: "Contact", href: "/#contact" },
   ];
 
@@ -100,19 +100,39 @@ function Header() {
             <nav
               className={`${
                 menu ? "flex-col" : "flex-row"
-              } flex items-center gap-4 sm:flex-row`}
+              } flex items-center gap-6 sm:flex-row`}
             >
-              {navLinks.map((link, id) => (
-                <Link
-                  onClick={() => setMenu((prev) => !prev)}
-                  smooth
-                  to={link.href}
-                  key={id + link.name}
-                  className="cursor-pointer"
-                >
-                  {link.name}
-                </Link>
-              ))}
+              {navLinks.map((link, id) =>
+                link.name === "Products" ? (
+                  <div key={id + link.name} className="relative">
+                    <p className="peer cursor-pointer">{link.name}</p>
+                    <div className="peer-hover:z-10 hover:z-10 peer-hover:top-full translate-y-6 hover:top-full duration-500 -z-10 -top-full absolute bg-white flex flex-col min-w-max">
+                      {categories.map((category) => (
+                        <Link
+                          key={category.target + category.name}
+                          to={{
+                            pathname: "/products",
+                            search: `?type=${category.target}`,
+                          }}
+                          className="border-b px-8 py-3 hover:bg-primary hover:text-white w-full"
+                        >
+                          {category.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <Link
+                    onClick={() => setMenu((prev) => !prev)}
+                    smooth
+                    to={link.href}
+                    key={id + link.name}
+                    className="cursor-pointer"
+                  >
+                    {link.name}
+                  </Link>
+                )
+              )}
             </nav>
 
             <nav
@@ -120,12 +140,12 @@ function Header() {
                 menu ? "flex-col" : "flex-row"
               } flex items-center gap-4 sm:gap-3 py-2 sm:flex-row`}
             >
-              <div className="flex items-center gap-2">
+              {/* <div className="flex items-center gap-2">
                 <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer hover:text-secondary hover:border-secondary">
                   <MdIcons.MdSearch size="1.2rem" />
                 </div>
                 <span className="sm:hidden">Search</span>
-              </div>
+              </div> */}
               {!user ? (
                 <button
                   onClick={() => setOption("login")}
@@ -148,7 +168,10 @@ function Header() {
                       {cart.length}
                     </span>
                   </div>
-                  <span className="sm:hidden">Cart ({cart.length})</span>
+                  <span className="sm:hidden">
+                    Cart (
+                    {cart.filter((cart) => cart.status === "pending").length})
+                  </span>
                 </Link>
               )}
             </nav>
