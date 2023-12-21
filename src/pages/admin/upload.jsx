@@ -4,9 +4,11 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import CreatableSelect from "react-select/creatable";
 import { addDoc, collection } from "firebase/firestore";
 import { useState, useRef } from "react";
+import Preloader from "../../components/preloader";
 
 function UploadProduct() {
   const [inputValue, setInputValue] = useState("");
+  const [loading, setLoading] = useState(false);
   const [size, setSize] = useState({ size: "", price: 0, discount: 0 });
   const wrapperRef = useRef(null);
   const [product, setProduct] = useState({
@@ -115,6 +117,8 @@ function UploadProduct() {
     if (error.length >= 1) {
       return;
     } else {
+      setLoading(true);
+
       try {
         await addDoc(collection(db, product.type), {
           ...product,
@@ -131,8 +135,11 @@ function UploadProduct() {
           image: "",
           sizes: [],
         });
+
+        setLoading(false);
       } catch (err) {
         console.log(err);
+        setLoading(false);
       }
     }
   };
@@ -156,6 +163,7 @@ function UploadProduct() {
 
   return (
     <div className="bg-white">
+      <Preloader modal={loading} />
       <form
         onSubmit={handleSubmit}
         className="flex flex-col w-full gap-4 p-4 sm:p-8"

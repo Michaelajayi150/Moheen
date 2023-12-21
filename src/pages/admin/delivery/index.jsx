@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import DeliveryItem from "./deliveryItem";
 import DeliveryDetails from "./deliveryDetails";
+import Preloader from "../../../components/cart/preloader";
 
 function Delivery() {
   const [carts, setCarts] = useState([]);
@@ -72,19 +73,11 @@ function Delivery() {
       </div>
 
       <div className="w-[calc(100vw_-_24px)] xs:w-[calc(100vw_-_48px)] md:w-[calc(100vw_-_312px)] md:max-w-[calc(1120px_-_312px)] mx-auto bg-white shadow-md text-sm text-gray-500 rounded-md">
+        <Preloader modal={loading} />
         <div className="flex whitespace-nowrap overflow-x-auto max-h-[60vh] overflow-y-auto [&>*:nth-child(2)]:text-primary-600">
           {tableHeader.map((theads) => (
             <div className={theads === "ellipsis" ? "" : "flex-1"} key={theads}>
-              {loading
-                ? Array.from({ length: 2 }).map((_, id) => (
-                    <div
-                      key={id}
-                      className="text-gray-100 text-opacity-0 p-4 animate-pulse"
-                    >
-                      Loading
-                    </div>
-                  ))
-                : carts.length >= 1
+              {carts.length >= 1
                 ? carts.map(
                     (cart, id) =>
                       cart.status.includes(filter) &&
@@ -104,7 +97,7 @@ function Delivery() {
                                 className="absolute w-full h-full bg-black bg-opacity-10 cursor-pointer"
                                 onClick={() => setModal(null)}
                               />
-                              <div className="absolute bg-white w-1/2 max-w-[600px] left-1/4 top-1/4 rounded p-6">
+                              <div className="absolute bg-white w-1/2 min-w-[280px] xs:min-w-[320px] [max-w-[600px] left-1/4 top-1/4 rounded p-6">
                                 <DeliveryDetails
                                   {...cart?.delivery}
                                   {...cart}
