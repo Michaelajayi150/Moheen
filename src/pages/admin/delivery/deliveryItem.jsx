@@ -17,7 +17,7 @@ function DeliveryItem({ id, cart, popAddress }) {
       {cart[id]}
     </span>
   ) : id === "price" ? (
-    <>#{(cart?.discount ? cart?.discount : cart?.price) * cart?.quantity}</>
+    <>₦ {cart?.amountPaid && cart?.amountPaid.toLocaleString("en-US")}</>
   ) : id === "email" ? (
     <span className="normal-case py-1">{cart?.delivery?.email}</span>
   ) : id === "ellipsis" ? (

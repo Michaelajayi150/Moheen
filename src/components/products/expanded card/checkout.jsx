@@ -50,6 +50,7 @@ function Checkout({
           status: "pending",
           deliveryDate: "",
           delivery: { ...checkout },
+          amountPaid: (discount ? discount : price) * quantity,
           cid: data.cart.length + 1,
         },
       ];

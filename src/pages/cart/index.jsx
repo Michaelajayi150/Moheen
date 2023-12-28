@@ -189,7 +189,12 @@ function CartPage() {
   const checkoutAll = async () => {
     const newCarts = carts.map((cart) => {
       if (cart.paid === false) {
-        return { ...cart, paid: true };
+        return {
+          ...cart,
+          paid: true,
+          amountPaid:
+            (cart.discount ? cart.discount : cart.price) * cart.quantity,
+        };
       }
       return cart;
     });
