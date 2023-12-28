@@ -91,6 +91,7 @@ function Delivery() {
                             cart={cart}
                             popAddress={() => setModal(id)}
                           />
+
                           {modal === id && (
                             <div className="fixed w-full h-screen top-0 left-0">
                               <div
@@ -101,6 +102,16 @@ function Delivery() {
                                 <DeliveryDetails
                                   {...cart?.delivery}
                                   {...cart}
+                                  handleOrders={(cid, value) =>
+                                    setCarts((prev) =>
+                                      prev.map((cart) => {
+                                        if (cart.id === cid) {
+                                          return { ...cart, status: value };
+                                        }
+                                        return cart;
+                                      })
+                                    )
+                                  }
                                 />
                               </div>
                             </div>

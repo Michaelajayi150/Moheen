@@ -15,7 +15,8 @@ function DeliveryDetails({
   price,
   status,
   uid,
-  cid,
+  id,
+  handleOrders,
 }) {
   const handleUpdate = async (value) => {
     const q = query(collection(db, "users"), where("uid", "==", uid));
@@ -25,7 +26,7 @@ function DeliveryDetails({
       // doc.data() is never undefined for query doc snapshots
       const data = doc.data();
       data.cart = data.cart.map((cart) => {
-        if (cart.cid === cid) {
+        if (cart.id === id) {
           return { ...cart, status: value };
         }
         return cart;
@@ -33,6 +34,7 @@ function DeliveryDetails({
 
       setDoc(doc.ref, { cart: data.cart }, { merge: true })
         .then(() => {
+          handleOrders(id, value);
           toast.success("Item has been successfully updated to user cart");
         })
         .catch((err) => {

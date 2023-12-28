@@ -108,6 +108,7 @@ function CartPage() {
 
   async function updateCart(index, name, value) {
     setLoading(true);
+
     const newCarts = carts.map((cart, id) => {
       if (id === index) {
         return { ...cart, [name]: value };
@@ -181,11 +182,43 @@ function CartPage() {
   const onSuccess = (reference) => {
     // Implementation for whatever you want to do with reference and after success call.
     console.log(reference);
-    carts.forEach((item, id) => {
-      if (!item.paid) {
-        updateCart(id, "paid", true);
+    setLoading(true);
+    checkoutAll();
+  };
+
+  const checkoutAll = async () => {
+    const newCarts = carts.map((cart) => {
+      if (cart.paid === false) {
+        return { ...cart, paid: true };
       }
+      return cart;
     });
+
+    const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      setDoc(doc.ref, { cart: newCarts }, { merge: true })
+        .then(() => {
+          toast.success(
+            "Your payment have been received, you will be contacted shortly"
+          );
+
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.success(
+            "Your payment have been received, please refresh to update cart"
+          );
+
+          setLoading(false);
+        });
+    });
+
+    setCarts(newCarts);
   };
 
   // you can call this function anything
