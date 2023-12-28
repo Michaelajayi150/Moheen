@@ -47,7 +47,7 @@ function Checkout({
           quantity,
           paid,
           size,
-          status: paid ? "ongoing" : "pending",
+          status: paid ? "on-going" : "pending",
           deliveryDate: "",
           delivery: { ...checkout },
           cid: data.cart.length + 1,
