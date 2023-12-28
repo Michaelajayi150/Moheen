@@ -13,6 +13,7 @@ import { deliveryTax } from "../../../assets/data";
 
 function Checkout({
   type,
+  name,
   discount,
   price,
   id,
@@ -50,6 +51,7 @@ function Checkout({
           status: "pending",
           deliveryDate: "",
           delivery: { ...checkout },
+          name: name,
           amountPaid: (discount ? discount : price) * quantity,
           cid: data.cart.length + 1,
         },
