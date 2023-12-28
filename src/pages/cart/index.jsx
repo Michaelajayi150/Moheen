@@ -65,7 +65,7 @@ function CartPage() {
           deliveryTax.forEach((deliverer) => {
             if (
               item?.delivery?.delivery_location === deliverer.state &&
-              item?.status === "pending"
+              item?.paid === false
             ) {
               delivery += deliverer.fee;
               deliveryDestination.push(deliverer.state);

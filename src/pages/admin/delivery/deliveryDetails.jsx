@@ -11,8 +11,7 @@ function DeliveryDetails({
   delivery_location,
   name,
   quantity,
-  discount,
-  price,
+  amountPaid,
   status,
   uid,
   id,
@@ -58,10 +57,12 @@ function DeliveryDetails({
           {phone}
         </div>
 
-        <div>
-          <p>Address</p>
-          {address}
-        </div>
+        {address && (
+          <div>
+            <p>Address</p>
+            {address}
+          </div>
+        )}
 
         <div>
           <p>Delivery Location</p>
@@ -83,7 +84,7 @@ function DeliveryDetails({
 
         <div className="text-center">
           <p>Amount Paid</p>
-          {(discount ? discount : price) * quantity}
+          {amountPaid}
         </div>
 
         <div className="text-center">
