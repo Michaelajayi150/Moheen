@@ -91,6 +91,23 @@ export const deliveryTax = [
   { state: "Warri", fee: 5280 },
   { state: "Nsukka", fee: 8065 },
   { state: "Sapele", fee: 5280 },
+  { state: "Onitsha", fee: 8065 },
+  { state: "Awka", fee: 8065 },
+  { state: "Owerri", fee: 8065 },
+  { state: "Port Harcourt", fee: 8065 },
+  { state: "Sokoto", fee: 8065 },
+  { state: "Makurdi", fee: 8065 },
+  { state: "Umuahia", fee: 8065 },
+  { state: "Uyo", fee: 8065 },
+  { state: "Yenagoa", fee: 8065 },
+  { state: "Zaria", fee: 8065 },
+  { state: "Gombe", fee: 9140 },
+  { state: "Maiduguri", fee: 9140 },
+  { state: "Damaturu", fee: 9140 },
+  { state: "Yola", fee: 9140 },
+  { state: "Jalingo", fee: 9140 },
+  { state: "Gusau", fee: 9140 },
+  { state: "Birnin-Kebbi", fee: 9140 },
 ];
 
 export const categories = [
