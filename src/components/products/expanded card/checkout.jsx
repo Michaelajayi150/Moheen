@@ -102,13 +102,17 @@ function Checkout({
     reference: new Date().getTime().toString(),
     email: user?.email,
     amount:
-      (size === null
+      ((size === null
         ? discount
           ? discount * quantity
           : price * quantity
         : sizes[size].discount
         ? sizes[size].discount * quantity
-        : sizes[size]?.price * quantity) * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
+        : sizes[size]?.price * quantity) +
+        deliveryTax.filter(
+          (item) => item.state === checkout.delivery_location
+        )[0].fee) *
+      100, // the amount value is multiplied by 100 to convert to the lowest currency unit
     currency: "NGN",
   });
 
