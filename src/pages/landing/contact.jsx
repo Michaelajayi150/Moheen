@@ -156,7 +156,7 @@ function Contact() {
             <CiIcons.CiClock2 className="mt-1" size="1.5rem" />
             <div className="text-neutral">
               <h4 className="text-xl">Working hours</h4>
-              <span>Mon - Sat 8: 00am - 9:00pm</span>
+              <span>Mon - Sat: 8:00am - 9:00pm</span>
             </div>
           </div>
         </div>

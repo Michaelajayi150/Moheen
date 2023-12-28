@@ -257,11 +257,11 @@ function Checkout({
                 (item) => item.state === checkout.delivery_location
               )[0].fee === 0
                 ? "-"
-                : `₦ ${
-                    deliveryTax.filter(
+                : `₦ ${deliveryTax
+                    .filter(
                       (item) => item.state === checkout.delivery_location
-                    )[0].fee
-                  }`}
+                    )[0]
+                    .fee.toLocaleString("en-US")}`}
             </p>
           </div>
 
