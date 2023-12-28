@@ -9,6 +9,7 @@ import { cart } from "../../../assets";
 import { AuthContext } from "../../../App";
 import { db } from "../../../middleware/firebase";
 import Preloader from "../../preloader";
+import { deliveryTax } from "../../../assets/data";
 
 function Checkout({
   type,
@@ -251,7 +252,17 @@ function Checkout({
           </div>
           <div className="flex justify-between w-full items-center">
             <p>Estimated delivery fee</p>
-            <p>{checkout.fee === 0 ? "-" : `₦ ${checkout.fee}`}</p>
+            <p>
+              {deliveryTax.filter(
+                (item) => item.state === checkout.delivery_location
+              )[0].fee === 0
+                ? "-"
+                : `₦ ${
+                    deliveryTax.filter(
+                      (item) => item.state === checkout.delivery_location
+                    )[0].fee
+                  }`}
+            </p>
           </div>
 
           <div className="flex justify-between w-full items-center border-y border-neutral py-2">
@@ -260,16 +271,28 @@ function Checkout({
               <p>
                 ₦{" "}
                 {(discount
-                  ? discount * quantity + checkout.fee
-                  : price * quantity + checkout.fee
+                  ? discount * quantity +
+                    deliveryTax.filter(
+                      (item) => item.state === checkout.delivery_location
+                    )[0].fee
+                  : price * quantity +
+                    deliveryTax.filter(
+                      (item) => item.state === checkout.delivery_location
+                    )[0].fee
                 ).toLocaleString("en-US")}
               </p>
             ) : (
               <p>
                 ₦
                 {(sizes[size]?.discount
-                  ? sizes[size]?.discount * quantity + checkout.fee
-                  : sizes[size]?.price * quantity + checkout.fee
+                  ? sizes[size]?.discount * quantity +
+                    deliveryTax.filter(
+                      (item) => item.state === checkout.delivery_location
+                    )[0].fee
+                  : sizes[size]?.price * quantity +
+                    deliveryTax.filter(
+                      (item) => item.state === checkout.delivery_location
+                    )[0].fee
                 ).toLocaleString("en-US")}
               </p>
             )}

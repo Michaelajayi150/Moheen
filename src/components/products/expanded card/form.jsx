@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { cart } from "../../../assets";
-import CitySelector from "../../citySelector";
+import { deliveryTax } from "../../../assets/data";
 
 function ProductForm({ clip, next, checkout, setCheckout }) {
   const [error, setError] = useState(false);
@@ -26,8 +26,7 @@ function ProductForm({ clip, next, checkout, setCheckout }) {
       checkout.firstName !== "" &&
       checkout.lastName !== "" &&
       checkout.email !== "" &&
-      checkout.address !== "" &&
-      checkout.state !== ""
+      checkout.delivery_location !== ""
     ) {
       setError(false);
       next();
@@ -138,10 +137,88 @@ function ProductForm({ clip, next, checkout, setCheckout }) {
 
         <div className="w-full flex flex-col gap-2">
           <label
+            htmlFor="checkout_shipping_address_province1"
+            className="field__label"
+          >
+            Delivery Station (if within Lagos)
+          </label>
+          <select
+            onChange={(e) =>
+              setCheckout((prev) => ({
+                ...prev,
+                delivery_location: e.target.value,
+              }))
+            }
+            required="required"
+            size="1"
+            name="state1"
+            id="checkout_shipping_address_province1"
+            className="border border-primary px-3 py-2 rounded w-full"
+            disabled={
+              checkout.delivery_location === ""
+                ? false
+                : !deliveryTax
+                    .slice(0, 52)
+                    .some((item) => item.state === checkout.delivery_location)
+            }
+          >
+            <option value="">--- Please Select ---</option>
+            {deliveryTax
+              .slice(0, 52)
+              .sort((a, b) => a.state.localeCompare(b.state))
+              .map(({ state }) => (
+                <option value={state} key={state}>
+                  {state}
+                </option>
+              ))}
+          </select>
+        </div>
+
+        <div className="w-full flex flex-col gap-2">
+          <label
+            htmlFor="checkout_shipping_address_province"
+            className="field__label"
+          >
+            Delivery Station (Other States)
+          </label>
+          <select
+            onChange={(e) =>
+              setCheckout((prev) => ({
+                ...prev,
+                delivery_location: e.target.value,
+              }))
+            }
+            disabled={
+              checkout.delivery_location === ""
+                ? false
+                : !deliveryTax
+                    .slice(52)
+                    .some((item) => item.state === checkout.delivery_location)
+            }
+            required="required"
+            size="1"
+            name="state"
+            id="checkout_shipping_address_province"
+            className="border border-primary px-3 py-2 rounded w-full"
+          >
+            <option value="">--- Please Select ---</option>
+            {deliveryTax
+              .slice(52)
+              .sort((a, b) => a.state.localeCompare(b.state))
+              .map(({ state }) => (
+                <option value={state} key={state}>
+                  {state}
+                </option>
+              ))}
+          </select>
+        </div>
+
+        <div className="w-full flex flex-col gap-2">
+          <label
             htmlFor="checkout_shipping_address_address1"
             className="field__label"
           >
-            Address
+            Additional Address
           </label>
           <input
             className="border border-primary px-3 py-2 rounded w-full"
@@ -164,44 +241,8 @@ function ProductForm({ clip, next, checkout, setCheckout }) {
                 address: e.target.value,
               }))
             }
-            placeholder="Address"
+            placeholder="Additonal Address"
           />
-        </div>
-
-        <div className="w-full flex flex-col gap-2">
-          <label
-            htmlFor="checkout_shipping_address_city"
-            className="field__label"
-          >
-            City
-          </label>
-          <input
-            className="border border-primary px-3 py-2 rounded w-full"
-            required="required"
-            placeholder="City"
-            autoComplete="shipping address-level2"
-            size="30"
-            type="text"
-            name="city"
-            id="checkout_shipping_address_city"
-            value={checkout.city}
-            onChange={(e) =>
-              setCheckout((prev) => ({
-                ...prev,
-                city: e.target.value,
-              }))
-            }
-            onInput={(e) =>
-              setCheckout((prev) => ({
-                ...prev,
-                city: e.target.value,
-              }))
-            }
-          />
-        </div>
-
-        <div className="flex gap-2 w-full">
-          <CitySelector state={checkout} setCheckout={setCheckout} />
         </div>
       </form>
       {error && (

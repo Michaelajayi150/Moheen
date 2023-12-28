@@ -12,14 +12,11 @@ function ExpandedCard({ setModal, item }) {
   const [checkout, setCheckout] = useState(false);
   const [form, setForm] = useState({
     address: "",
-    city: "",
     email: "",
     firstName: "",
     lastName: "",
     phone: "",
-    state: "",
-    zip: "",
-    fee: 0,
+    delivery_location: "",
   });
 
   return (

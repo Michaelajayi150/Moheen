@@ -8,8 +8,7 @@ function DeliveryDetails({
   lastName,
   phone,
   address,
-  city,
-  state,
+  delivery_location,
   name,
   quantity,
   discount,
@@ -63,13 +62,8 @@ function DeliveryDetails({
         </div>
 
         <div>
-          <p>City</p>
-          {city}
-        </div>
-
-        <div>
-          <p>State</p>
-          {state}
+          <p>Delivery Location</p>
+          {delivery_location}
         </div>
       </div>
 

@@ -64,7 +64,7 @@ function CartPage() {
         if (!deliveryDestination.includes(item?.delivery?.state)) {
           deliveryTax.forEach((deliverer) => {
             if (
-              item?.delivery?.state === deliverer.state &&
+              item?.delivery?.delivery_location === deliverer.state &&
               item?.status === "pending"
             ) {
               delivery += deliverer.fee;
@@ -216,11 +216,11 @@ function CartPage() {
             <div>
               <h2 className="text-xl font-semibold">Shipping Address</h2>
               <div className="space-y-3 mt-2">
-                {info?.state ? (
+                {info?.delivery_location ? (
                   <>
-                    {`${info.address}${info?.city && `, ${info.city}`}`}
+                    {info?.address && `${info.address}, `}
                     <br />
-                    {`${info.state}, Nigeria`}
+                    {info.delivery_location}, Nigeria
                   </>
                 ) : (
                   "Not Set"

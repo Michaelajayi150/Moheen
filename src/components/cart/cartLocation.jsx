@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 
-function CartLocation({ address, city, state, status, paid }) {
+function CartLocation({ address, delivery_location, status, paid }) {
   return (
     <div className="flex justify-between items-start w-full flex-wrap gap-6">
       <div>
         <h4>Shipping</h4>
         <p className="font-light text-sm">
-          {`${address}${city && `, ${city}`}`} {`${state}, Nigeria`}
+          {`${address && `${address}, `}${delivery_location}, Nigeria`}
         </p>
       </div>
 

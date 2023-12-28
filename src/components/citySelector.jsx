@@ -1,41 +1,13 @@
 /* eslint-disable react/prop-types */
-function CitySelector({ setCheckout, state }) {
+function CitySelector({ setCheckout }) {
   return (
     <>
-      <div className="w-1/4 flex flex-col gap-2">
-        <label htmlFor="checkout_shipping_address_zip" className="truncate">
-          Postal code
-        </label>
-        <input
-          className="border border-primary px-3 py-2 rounded w-full"
-          size="30"
-          type="text"
-          name="zip"
-          id="checkout_shipping_address_zip"
-          autoComplete="zip-code"
-          value={state.zip}
-          onChange={(e) =>
-            setCheckout((prev) => ({
-              ...prev,
-              zip: e.target.value,
-            }))
-          }
-          onInput={(e) =>
-            setCheckout((prev) => ({
-              ...prev,
-              zip: e.target.value,
-            }))
-          }
-          placeholder="Postal code"
-        />
-      </div>
-
       <div className="w-full flex flex-col gap-2">
         <label
           htmlFor="checkout_shipping_address_province"
           className="field__label"
         >
-          State
+          Delivery Station
         </label>
         <select
           onChange={(e) =>

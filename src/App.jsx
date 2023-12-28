@@ -29,11 +29,17 @@ function App() {
       const data = doc.data();
       setCart(data.cart);
 
-      if (data.details || data.details !== null) {
-        sessionStorage.setItem(
-          "moheen-shop-checkout-details",
-          JSON.stringify(data.details)
-        );
+      if (data.details) {
+        if (data.details !== null) {
+          sessionStorage.setItem(
+            "moheen-shop-checkout-details",
+            JSON.stringify(data.details)
+          );
+        } else {
+          sessionStorage.removeItem("moheen-shop-checkout-details");
+        }
+      } else {
+        sessionStorage.removeItem("moheen-shop-checkout-details");
       }
     });
   }
