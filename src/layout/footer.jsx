@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 function Footer() {
   return (
-    <footer className="bg-neutral text-white">
+    <footer className="bg-primary text-white">
       <div className="pt-16 pb-6 px-6 lg:max-w-[1120px] mx-auto relative">
         <Link to="/">
           <img src={Logo2} alt="Moheen" />

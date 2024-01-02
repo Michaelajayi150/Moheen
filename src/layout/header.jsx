@@ -106,7 +106,7 @@ function Header() {
                 link.name === "Products" ? (
                   <div key={id + link.name} className="relative">
                     <p className="peer cursor-pointer">{link.name}</p>
-                    <div className="peer-hover:z-10 hover:z-10 peer-hover:top-full translate-y-6 hover:top-full duration-500 -z-10 -top-full absolute bg-white flex flex-col min-w-max">
+                    <div className="peer-hover:z-10 hover:z-10 peer-hover:top-full peer-hover:visible peer-hover:opacity-100 translate-y-6 hover:top-full hover:visible hover:opacity-100 duration-500 -z-10 -top-full absolute invisible bg-white flex flex-col min-w-max">
                       {categories.map((category) => (
                         <Link
                           key={category.target + category.name}

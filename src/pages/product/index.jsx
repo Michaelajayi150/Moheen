@@ -35,7 +35,11 @@ function ProductPage() {
         >
           <option value="">All</option>
           {categories.map((category) => (
-            <option value={category.target} key={category.name}>
+            <option
+              selected={filter === category.target}
+              value={category.target}
+              key={category.name}
+            >
               {category.name}
             </option>
           ))}

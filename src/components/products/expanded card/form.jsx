@@ -167,7 +167,11 @@ function ProductForm({ clip, next, checkout, setCheckout }) {
               .slice(0, 52)
               .sort((a, b) => a.state.localeCompare(b.state))
               .map(({ state }) => (
-                <option value={state} key={state}>
+                <option
+                  selected={checkout.delivery_location === state}
+                  value={state}
+                  key={state}
+                >
                   {state}
                 </option>
               ))}
@@ -206,7 +210,11 @@ function ProductForm({ clip, next, checkout, setCheckout }) {
               .slice(52)
               .sort((a, b) => a.state.localeCompare(b.state))
               .map(({ state }) => (
-                <option value={state} key={state}>
+                <option
+                  selected={checkout.delivery_location === state}
+                  value={state}
+                  key={state}
+                >
                   {state}
                 </option>
               ))}
