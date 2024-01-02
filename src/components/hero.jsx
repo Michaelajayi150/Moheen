@@ -6,6 +6,7 @@ import {
   backgroundImage3,
   backgroundImage4,
   backgroundImage5,
+  backgroundImage6,
 } from "../assets";
 
 import { Autoplay } from "swiper/modules";
@@ -23,6 +24,7 @@ function HeroSection() {
     backgroundImage3,
     backgroundImage4,
     backgroundImage5,
+    backgroundImage6,
   ];
 
   return (
