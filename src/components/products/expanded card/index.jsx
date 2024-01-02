@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
-import { MdClose } from "react-icons/md";
-import "react-toastify/dist/ReactToastify.css";
-import ProductDescription from "./description";
-import ProductForm from "./form";
 import { useState } from "react";
+import { MdClose } from "react-icons/md";
 import * as IoIcon from "react-icons/io";
+
+import ProductForm from "./form";
+import ProductDescription from "./description";
 import Checkout from "./checkout";
 
 function ExpandedCard({ setModal, item }) {
