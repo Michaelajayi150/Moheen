@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { AuthContext } from "../App";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { HashLink as Link } from "react-router-hash-link";
 
 import { Logo } from "../assets";
@@ -13,6 +13,7 @@ function Header() {
   const { cart, user, setOption } = useContext(AuthContext);
 
   const [menu, setMenu] = useState(false);
+  const [subMenu, setSubMenu] = useState(false);
   const { pathname } = useLocation();
 
   const navLinks = [
@@ -21,6 +22,10 @@ function Header() {
     { name: "Products", href: "/products/" },
     { name: "Contact", href: "/#contact" },
   ];
+
+  useEffect(() => {
+    setSubMenu(false);
+  }, [menu]);
 
   return (
     <header className={`${menu ? "max-sm:fixed z-50" : "relative"} w-full`}>
@@ -70,13 +75,13 @@ function Header() {
           {menu ? (
             <MdIcons.MdClose
               onClick={() => setMenu((prev) => !prev)}
-              className="sm:hidden w-fit"
+              className="sm:hidden w-fit relative z-10 cursor-pointer"
               size="1.5rem"
             />
           ) : (
             <MdIcons.MdMenu
               onClick={() => setMenu((prev) => !prev)}
-              className="sm:hidden w-fit"
+              className="sm:hidden w-fit relative z-10 cursor-pointer"
               size="1.5rem"
             />
           )}
@@ -95,18 +100,38 @@ function Header() {
               menu
                 ? "max-sm:fixed max-sm:top-20 h-full flex max-sm:flex-col justify-center bg-white right-0 w-1/2"
                 : "relative hidden justify-between"
-            } sm:justify-between items-center duration-500 sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
+            } sm:justify-between sm:items-center duration-500 max-sm:pl-6 sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
           >
             <nav
               className={`${
                 menu ? "flex-col" : "flex-row"
-              } flex items-center gap-6 sm:flex-row`}
+              } flex sm:items-center gap-6 sm:flex-row`}
             >
               {navLinks.map((link, id) =>
                 link.name === "Products" ? (
-                  <div key={id + link.name} className="relative">
-                    <p className="peer cursor-pointer">{link.name}</p>
-                    <div className="peer-hover:z-10 hover:z-10 peer-hover:top-full peer-hover:visible peer-hover:opacity-100 translate-y-6 hover:top-full hover:visible hover:opacity-100 duration-500 -z-10 -top-full absolute invisible bg-white flex flex-col min-w-max">
+                  <div
+                    onClick={() => setSubMenu((prev) => !prev)}
+                    key={id + link.name}
+                    className="relative"
+                  >
+                    <p className="cursor-pointer flex items-center gap-1 max-sm:justify-between">
+                      {link.name}
+                      <MdIcons.MdArrowDropDown
+                        className={`${
+                          subMenu ? "rotate-180" : "rotate-0"
+                        } -translate-y-[1px]  duration-500`}
+                        size="1.5rem"
+                      />
+                    </p>
+
+                    <div
+                      className={`${
+                        subMenu
+                          ? "sm:top-full visible opacity-100 relative"
+                          : "sm:-top-full opacity-0 invisible absolute"
+                      } sm:absolute duration-500 sm:translate-y-6 bg-white flex flex-col min-w-max
+                      max-sm:pt-3 z-10`}
+                    >
                       {categories.map((category) => (
                         <Link
                           key={category.target + category.name}
@@ -114,7 +139,7 @@ function Header() {
                             pathname: "/products",
                             search: `?type=${category.target}`,
                           }}
-                          className="border-b px-8 py-3 hover:bg-primary hover:text-white w-full"
+                          className="sm:border-b sm:px-8 py-3 max-sm:last:pb-0 sm:hover:bg-primary sm:hover:text-white w-full"
                         >
                           {category.name}
                         </Link>
@@ -138,7 +163,7 @@ function Header() {
             <nav
               className={`${
                 menu ? "flex-col" : "flex-row"
-              } flex items-center gap-4 sm:gap-3 py-2 sm:flex-row`}
+              } flex sm:items-center gap-4 sm:gap-3 py-2 sm:flex-row`}
             >
               {/* <div className="flex items-center gap-2">
                 <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer hover:text-secondary hover:border-secondary">
@@ -154,14 +179,14 @@ function Header() {
                   Login
                 </button>
               ) : user?.email === "moheenadmin@gmail.com" ? (
-                <Link to="/admin" className="flex items-center gap-2">
-                  <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer group hover:text-secondary hover:border-secondary relative">
+                <Link to="/admin" className="flex sm:items-center gap-2">
+                  <div className="max-sm:hidden w-10 h-10 flex sm:items-center justify-center rounded-full border border-neutral cursor-pointer group hover:text-secondary hover:border-secondary relative">
                     <MdIcons.MdOutlineShoppingBag size="1.2rem" />
                   </div>
                   <span className="sm:hidden">Dashboard</span>
                 </Link>
               ) : (
-                <Link to="/cart" className="flex items-center gap-2">
+                <Link to="/cart" className="flex sm:items-center gap-2">
                   <div className="max-sm:hidden w-10 h-10 flex items-center justify-center rounded-full border border-neutral cursor-pointer group hover:text-secondary hover:border-secondary relative">
                     <MdIcons.MdOutlineShoppingBag size="1.2rem" />
                     <span className="absolute -bottom-1 -right-1 flex items-center justify-center h-4 w-4 rounded-full border border-neutral group-hover:border-secondary text-[10px] font-semibold bg-white">

@@ -11,6 +11,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import CartPage from "./pages/cart";
 import ScrollToTop from "./components/scrollToTop";
 import Admin from "./pages/admin";
+import HeroSection from "./components/hero";
 
 export const CartContext = createContext();
 export const AuthContext = createContext();
@@ -75,10 +76,19 @@ function App() {
               </>
             }
           >
-            <Route path="/" element={<LandingPage />} />
+            <Route
+              element={
+                <>
+                  <HeroSection />
+                  <Outlet />
+                </>
+              }
+            >
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/products" element={<ProductPage />} />
+            </Route>
             <Route path="/admin/*" element={<Admin />} />
             <Route path="/cart" element={<CartPage />} />
-            <Route path="/products" element={<ProductPage />} />
           </Route>
         </Routes>
         <Footer />

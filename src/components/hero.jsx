@@ -6,7 +6,7 @@ import {
   backgroundImage3,
   backgroundImage4,
   backgroundImage5,
-} from "../../assets";
+} from "../assets";
 
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -40,12 +40,13 @@ function HeroSection() {
           className="h-full"
         >
           {images.map((image) => (
-            <SwiperSlide key={image}>
+            <SwiperSlide key={image} className="relative">
               <img
                 className="h-full w-full bg-contain"
                 src={image}
                 alt="Welcome to Moheen"
               />
+              <div className="absolute top-0 w-full h-full bg-gradient-to-t from-neutral to-transparent" />
             </SwiperSlide>
           ))}
         </Swiper>

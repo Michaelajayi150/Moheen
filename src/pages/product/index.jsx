@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import ProductCategory from "../../components/products";
-import HeroSection from "./hero";
 import { categories } from "../../assets/data";
 import { useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -23,7 +22,6 @@ function ProductPage() {
 
   return (
     <>
-      <HeroSection />
       <section
         id="products"
         ref={sectionRef}
