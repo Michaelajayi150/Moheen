@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
 import ProductCategory from "../../components/products";
+import { ToastContainer } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 function ProductSection() {
   return (
@@ -17,6 +20,8 @@ function ProductSection() {
       >
         view more
       </Link>
+
+      <ToastContainer className="text-xs" limit={1} />
     </section>
   );
 }

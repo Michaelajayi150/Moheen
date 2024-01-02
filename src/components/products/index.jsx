@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { db } from "../../middleware/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
-import "react-toastify/dist/ReactToastify.css";
-
 // eslint-disable-next-line react/prop-types
 function ProductCategory({ category, name, max }) {
   const [products, setProducts] = useState([]);
