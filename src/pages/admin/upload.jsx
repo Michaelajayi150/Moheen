@@ -5,6 +5,7 @@ import CreatableSelect from "react-select/creatable";
 import { addDoc, collection } from "firebase/firestore";
 import { useState, useRef } from "react";
 import Preloader from "../../components/preloader";
+import { categories } from "../../assets/data";
 
 function UploadProduct() {
   const [inputValue, setInputValue] = useState("");
@@ -22,13 +23,6 @@ function UploadProduct() {
     type: "decoration",
   });
   const [file, setFile] = useState(null);
-
-  const categories = [
-    { name: "Home Decoration", target: "decoration" },
-    { name: "Toilet Accessories", target: "toiletries" },
-    { name: "Towels", target: "towels" },
-    { name: "Beddings and accessories", target: "bedding" },
-  ];
 
   const url = "https://api.cloudinary.com/v1_1/drrcyvvvq/image/upload";
 

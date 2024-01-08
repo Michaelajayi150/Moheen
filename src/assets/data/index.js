@@ -111,10 +111,17 @@ export const deliveryTax = [
 ];
 
 export const categories = [
-  { name: "Home Decoration", target: "decoration" },
-  { name: "Toilet Accessories", target: "toiletries" },
-  { name: "Towels", target: "towels" },
-  { name: "Beddings and accessories", target: "bedding" },
+  { name: "Home Accessories", target: "home accessories" },
+  { name: "Bathroom Accessories", target: "bathroom accessories" },
+  { name: "Beddings", target: "bedding" },
+  { name: "Plants", target: "plants" },
+  { name: "Ornaments", target: "ornaments" },
+  { name: "Humidifier", target: "humidifier" },
+  { name: "Pillows", target: "pillows" },
+  { name: "Rugs", target: "rugs" },
+  { name: "Lights", target: "lights" },
+  { name: "Wall Decoration", target: "wall decor" },
+  { name: "Slippers", target: "slippers" },
 ];
 
 export const dummyReviews = [

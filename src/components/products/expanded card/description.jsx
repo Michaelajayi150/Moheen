@@ -25,14 +25,16 @@ function ProductDescription({
         <div className="space-y-1">
           <h1 className="card-title text-[1.2rem] truncate">{name}</h1>
           <p className="product-description text-xs">{description}</p>
-          <div className="flex gap-2 items-center text-sm">
-            Tags:
-            <ul className="flex gap-2 flex-wrap">
-              {tags.map((tag) => (
-                <li key={tag}>{tag}</li>
-              ))}
-            </ul>
-          </div>
+          {tags && (
+            <div className="flex gap-2 items-center text-sm">
+              Tags:
+              <ul className="flex gap-2 flex-wrap">
+                {tags?.map((tag) => (
+                  <li key={tag}>{tag}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2 mb-4 mt-auto">
