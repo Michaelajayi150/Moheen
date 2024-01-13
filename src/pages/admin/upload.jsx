@@ -20,7 +20,7 @@ function UploadProduct() {
     price: 0,
     sizes: [],
     tags: [],
-    type: "decoration",
+    type: "home accessories",
   });
   const [file, setFile] = useState(null);
 
@@ -54,11 +54,12 @@ function UploadProduct() {
       );
 
       const result = await response.json();
+
       setFile({
         image: image,
         started: false,
       });
-      setProduct((prev) => ({ ...prev, image: result.url }));
+      setProduct((prev) => ({ ...prev, image: result.secure_url }));
     } catch (error) {
       console.error("Error:", error);
     }
@@ -125,7 +126,7 @@ function UploadProduct() {
           tags: {},
           description: "",
           discount: 0,
-          type: "decoration",
+          type: "home accessories",
           image: "",
           sizes: [],
         });

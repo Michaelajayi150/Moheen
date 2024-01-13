@@ -94,46 +94,50 @@ function TotalProduct() {
         </p>
       </div>
 
-      <div className="w-[calc(100vw_-_24px)] xs:w-[calc(100vw_-_48px)] md:max-w-[calc(1120px_-_312px)] mx-auto bg-white shadow-md text-sm text-gray-500 rounded-md relative">
-        <Preloader modal={loading} />
-        <div className="flex whitespace-nowrap overflow-x-auto max-h-[60vh] overflow-y-auto [&>*:nth-child(2)]:text-primary-600">
-          {tableHeader.map((theads) => (
-            <div className="flex-1" key={theads.name}>
-              <div className="p-4 uppercase text-gray-900 border-b-2 border-r-2 border-gray-200">
-                {theads.name}
-              </div>
+      <Preloader modal={loading} />
 
-              <div className="[&>*:nth-child(even)]:bg-gray-100 border-b-2 border-r-2 border-gray-200">
-                {products.length >= 1
-                  ? products.map(
-                      (product, id) =>
-                        product.type.includes(filter) && (
-                          <div
-                            key={product.name + id}
-                            className={`${
-                              deleted === id ? "!bg-red-400 text-white" : ""
-                            } p-4 capitalize`}
-                          >
-                            <ListCard
-                              theads={theads}
-                              product={product}
-                              deleteProduct={() =>
-                                handleDelete(product.type, product.id, id)
-                              }
-                              setDeleted={() =>
-                                deleted === id ? setDeleted("") : setDeleted(id)
-                              }
-                            />
-                          </div>
-                        )
-                    )
-                  : "No item uploaded yet"}
+      {products.length >= 1 ? (
+        <div className="w-[calc(100vw_-_24px)] xs:w-[calc(100vw_-_48px)] md:max-w-[calc(1120px_-_312px)] mx-auto bg-white shadow-md text-sm text-gray-500 rounded-md relative">
+          <div className="flex whitespace-nowrap overflow-x-auto max-h-[60vh] overflow-y-auto [&>*:nth-child(2)]:text-primary-600">
+            {tableHeader.map((theads) => (
+              <div className="flex-1" key={theads.name}>
+                <div className="p-4 uppercase text-gray-900 border-b-2 border-r-2 border-gray-200">
+                  {theads.name}
+                </div>
+
+                <div className="[&>*:nth-child(even)]:bg-gray-100 border-b-2 border-r-2 border-gray-200">
+                  {products.map(
+                    (product, id) =>
+                      product.type.includes(filter) && (
+                        <div
+                          key={product.name + id}
+                          className={`${
+                            deleted === id ? "!bg-red-400 text-white" : ""
+                          } p-4 capitalize`}
+                        >
+                          <ListCard
+                            theads={theads}
+                            product={product}
+                            deleteProduct={() =>
+                              handleDelete(product.type, product.id, id)
+                            }
+                            setDeleted={() =>
+                              deleted === id ? setDeleted("") : setDeleted(id)
+                            }
+                          />
+                        </div>
+                      )
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-        <ToastContainer limit={1} />
-      </div>
+      ) : (
+        "No item uploaded yet"
+      )}
+
+      <ToastContainer limit={1} />
     </section>
   );
 }

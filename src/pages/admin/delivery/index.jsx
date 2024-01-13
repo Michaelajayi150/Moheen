@@ -72,59 +72,64 @@ function Delivery() {
         </div>
       </div>
 
-      <div className="w-[calc(100vw_-_24px)] xs:w-[calc(100vw_-_48px)] md:w-[calc(100vw_-_312px)] md:max-w-[calc(1120px_-_312px)] mx-auto bg-white shadow-md text-sm text-gray-500 rounded-md">
-        <Preloader modal={loading} />
-        <div className="flex whitespace-nowrap overflow-x-auto max-h-[60vh] overflow-y-auto [&>*:nth-child(2)]:text-primary-600">
-          {tableHeader.map((theads) => (
-            <div className={theads === "ellipsis" ? "" : "flex-1"} key={theads}>
-              {carts.length >= 1
-                ? carts.map(
-                    (cart, id) =>
-                      cart.status.includes(filter) &&
-                      cart?.delivery.address.toLowerCase().match(search) && (
-                        <div
-                          key={cart.name + id}
-                          className="p-4 capitalize border-b-2 border-gray-200"
-                        >
-                          <DeliveryItem
-                            id={theads}
-                            cart={cart}
-                            popAddress={() => setModal(id)}
-                          />
+      <Preloader modal={loading} />
+      {carts.length >= 1 ? (
+        <div className="w-[calc(100vw_-_24px)] xs:w-[calc(100vw_-_48px)] md:w-[calc(100vw_-_312px)] md:max-w-[calc(1120px_-_312px)] mx-auto bg-white shadow-md text-sm text-gray-500 rounded-md">
+          <div className="flex whitespace-nowrap overflow-x-auto max-h-[60vh] overflow-y-auto [&>*:nth-child(2)]:text-primary-600">
+            {tableHeader.map((theads) => (
+              <div
+                className={theads === "ellipsis" ? "" : "flex-1"}
+                key={theads}
+              >
+                {carts.map(
+                  (cart, id) =>
+                    cart.status.includes(filter) &&
+                    cart?.delivery.address.toLowerCase().match(search) && (
+                      <div
+                        key={cart.name + id}
+                        className="p-4 capitalize border-b-2 border-gray-200"
+                      >
+                        <DeliveryItem
+                          id={theads}
+                          cart={cart}
+                          popAddress={() => setModal(id)}
+                        />
 
-                          {modal === id && (
-                            <div className="fixed w-full h-screen top-0 left-0">
-                              <div
-                                className="absolute w-full h-full bg-black bg-opacity-10 cursor-pointer"
-                                onClick={() => setModal(null)}
+                        {modal === id && (
+                          <div className="fixed w-full h-screen top-0 left-0">
+                            <div
+                              className="absolute w-full h-full bg-black bg-opacity-10 cursor-pointer"
+                              onClick={() => setModal(null)}
+                            />
+                            <div className="absolute bg-white w-1/2 min-w-[280px] xs:min-w-[320px] [max-w-[600px] left-1/4 top-1/4 rounded p-6">
+                              <DeliveryDetails
+                                {...cart?.delivery}
+                                {...cart}
+                                handleOrders={(cid, value) =>
+                                  setCarts((prev) =>
+                                    prev.map((cart) => {
+                                      if (cart.id === cid) {
+                                        return { ...cart, status: value };
+                                      }
+                                      return cart;
+                                    })
+                                  )
+                                }
                               />
-                              <div className="absolute bg-white w-1/2 min-w-[280px] xs:min-w-[320px] [max-w-[600px] left-1/4 top-1/4 rounded p-6">
-                                <DeliveryDetails
-                                  {...cart?.delivery}
-                                  {...cart}
-                                  handleOrders={(cid, value) =>
-                                    setCarts((prev) =>
-                                      prev.map((cart) => {
-                                        if (cart.id === cid) {
-                                          return { ...cart, status: value };
-                                        }
-                                        return cart;
-                                      })
-                                    )
-                                  }
-                                />
-                              </div>
                             </div>
-                          )}
-                        </div>
-                      )
-                  )
-                : "No item uploaded yet"}
-            </div>
-          ))}
+                          </div>
+                        )}
+                      </div>
+                    )
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-        <ToastContainer limit={1} />
-      </div>
+      ) : (
+        "No item ordered"
+      )}
+      <ToastContainer limit={1} />
     </div>
   );
 }
