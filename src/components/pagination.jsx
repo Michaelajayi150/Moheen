@@ -24,7 +24,7 @@ function Pagination({ cardsPerPage, totalCards, currentPage, paginate }) {
           className={`${
             currentPage === 1
               ? "bg-shades-100 cursor-not-allowed"
-              : "bg-white cursor-pointer hover:bg-primary hover:bg-opacity-50"
+              : "bg-white cursor-pointer hover:bg-primary hover:bg-opacity-50 hover:text-white"
           } py-2 px-4 border rounded`}
         >
           Previous
@@ -38,7 +38,7 @@ function Pagination({ cardsPerPage, totalCards, currentPage, paginate }) {
                 number === currentPage
                   ? "bg-primary text-white bg-opacity-70"
                   : ""
-              } py-2 px-4 cursor-pointer font-semibold`}
+              } py-2 px-4 cursor-pointer font-semibold border`}
             >
               {number}
             </li>
@@ -49,7 +49,7 @@ function Pagination({ cardsPerPage, totalCards, currentPage, paginate }) {
           className={`${
             currentPage === Math.ceil(totalCards / cardsPerPage)
               ? "bg-shades-100 cursor-not-allowed"
-              : "bg-white cursor-pointer hover:bg-primary hover:bg-opacity-50"
+              : "bg-white cursor-pointer hover:bg-primary hover:bg-opacity-50  hover:text-white"
           } py-2 px-4 border rounded`}
         >
           Next

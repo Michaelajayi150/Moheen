@@ -5,7 +5,7 @@ function MultiplePricing({ setProduct, sizeCollection }) {
   const [size, setSize] = useState({ size: "", price: 0, discount: 0 });
 
   const addItem = () => {
-    if (size.price !== 0 && size.discount !== 0 && size.size !== "") {
+    if (size.price !== 0 && size.size !== "") {
       setProduct((prev) => ({
         ...prev,
         sizes: [...prev.sizes, size],
