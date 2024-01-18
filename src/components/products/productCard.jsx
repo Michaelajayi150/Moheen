@@ -5,32 +5,43 @@ import { cart } from "../../assets";
 import ExpandedCard from "./expanded card";
 import { useNavigate } from "react-router-dom";
 
-function ProductCard({
-  data,
-  image,
-  name,
-  type,
-  price,
-  isMultiple,
-  sizes,
-  discount,
-  popup,
-  admin,
-  id,
-}) {
+import { Autoplay } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/autoplay";
+
+function ProductCard({ data, images, name, type, sizes, popup, admin, id }) {
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
 
   return (
-    <div className="card bg-white">
-      <picture className="bg-shades-200 min-h-[160px] flex flex-col bg-opacity-40">
-        <source srcSet={image} media="(min-width: 768px)" />
-        <img
-          className="w-full h-full flex-1 hover:scale-105 duration-500 cursor-pointer"
-          src={image}
-          alt={name}
-        />
-      </picture>
+    <div className="card bg-white relative">
+      <Swiper
+        // install Swiper modules
+        modules={[Autoplay]}
+        loop={true}
+        autoplay={{
+          delay: 3500,
+          disableOnInteraction: false,
+        }}
+        slidesPerView={1}
+        className="h-full w-full"
+      >
+        {images.map((image) => (
+          <SwiperSlide key={image.id} className="relative">
+            <picture className="bg-shades-200 max-h-[220px] flex flex-col bg-opacity-40">
+              <source srcSet={image.url} media="(min-width: 768px)" />
+              <img
+                className="w-full h-full flex-1"
+                src={image.url}
+                alt={name}
+              />
+            </picture>
+          </SwiperSlide>
+        ))}
+      </Swiper>
 
       <div className="flex flex-col justify-between p-4">
         <small className="uppercase mb-1">{admin ? type : data.type}</small>
@@ -38,20 +49,17 @@ function ProductCard({
 
         <div className="flex items-center gap-2 mb-4">
           <h1 className="price text-h1 md:text-[1.2rem]">
-            $
-            {isMultiple
+            ₦
+            {(sizes[0].discount
               ? sizes[0].discount
-                ? sizes[0].discount
-                : sizes[0].price
-              : discount
-              ? discount
-              : price}
+              : sizes[0].price
+            ).toLocaleString("en-US")}
           </h1>
-          {isMultiple
-            ? sizes[0].discount && (
-                <del className="text-xs">${sizes[0].price}</del>
-              )
-            : discount && <del className="text-xs">${price}</del>}
+          {sizes[0].discount && (
+            <del className="text-xs">
+              ₦ {sizes[0].price.toLocaleString("en-US")}
+            </del>
+          )}
         </div>
         {!popup && !admin ? (
           <button onClick={() => setModal(true)} className="card-btn">

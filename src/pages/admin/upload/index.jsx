@@ -18,6 +18,7 @@ import TagSelection from "./tagSelection";
 import ColorSelection from "./colorSelection";
 import { IoIosCloudUpload, IoMdTrash } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
+import ImageContainer from "./imageContainer";
 
 function UploadProduct() {
   const [loading, setLoading] = useState(false);
@@ -25,14 +26,11 @@ function UploadProduct() {
 
   const [product, setProduct] = useState({
     description: "",
-    discount: 0,
-    image: "",
+    images: [],
     name: "",
-    price: 0,
     sizes: [],
     tags: [],
     type: "home accessories",
-    isMultiple: false,
     colors: [],
   });
 
@@ -223,83 +221,33 @@ function UploadProduct() {
         <ColorSelection setProduct={setProduct} colors={product.colors} />
 
         {/* Image */}
-        <ImageUpload setProduct={setProduct} product={product} />
+        <div className="flex flex-col gap-3">
+          <ImageUpload setProduct={setProduct} />
+
+          <div className="flex gap-2 w-full">
+            {product.images.length >= 1 &&
+              product.images.map((image, id) => (
+                <ImageContainer
+                  key={image}
+                  image={image}
+                  deleteImage={() =>
+                    setProduct((currentProduct) => ({
+                      ...currentProduct,
+                      images: currentProduct.images.filter((_, i) => i !== id),
+                    }))
+                  }
+                />
+              ))}
+          </div>
+        </div>
 
         <div className="w-full space-y-2">
           <div>Pricing</div>
-          <select
-            onChange={(e) =>
-              setProduct((prev) => ({
-                ...prev,
-                isMultiple: e.target.value === "multiple" ? true : false,
-              }))
-            }
-            value={product.isMultiple ? "multiple" : "single"}
-            className="border rounded px-2 py-2 w-full"
-          >
-            <option value="single">Single</option>
-            <option value="multiple">Multiple</option>
-          </select>
-        </div>
-
-        {product.isMultiple ? (
           <MultiplePricing
             setProduct={setProduct}
             sizeCollection={product.sizes}
           />
-        ) : (
-          <div className="flex w-full gap-3 max-sm:flex-col">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="price">
-                Price <span className="text-red-500">*</span>
-              </label>
-              <input
-                className="px-4 py-2 outline-0 border focus:border-[1.5px] border-primary rounded-md"
-                type="number"
-                id="price"
-                placeholder="Price of product"
-                value={product.price}
-                min={0}
-                onChange={(e) =>
-                  setProduct((prev) => ({
-                    ...prev,
-                    price: parseInt(e.target.value),
-                  }))
-                }
-                onInput={(e) =>
-                  setProduct((prev) => ({
-                    ...prev,
-                    price: parseInt(e.target.value),
-                  }))
-                }
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label htmlFor="Discount">Discount</label>
-              <input
-                className="px-4 py-2 outline-0 border focus:border-[1.5px] border-primary rounded-md"
-                type="number"
-                id="Discount"
-                min={0}
-                placeholder="Discount on product"
-                value={product?.discount}
-                onChange={(e) =>
-                  setProduct((prev) => ({
-                    ...prev,
-                    discount: parseInt(e.target.value),
-                  }))
-                }
-                onInput={(e) =>
-                  setProduct((prev) => ({
-                    ...prev,
-                    discount: parseInt(e.target.value),
-                  }))
-                }
-              />
-            </div>
-          </div>
-        )}
+        </div>
 
         <label id="uploadError" className="hidden"></label>
         {editing ? (

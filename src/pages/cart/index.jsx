@@ -71,13 +71,9 @@ function CartPage() {
     carts.forEach((item) => {
       const total = item.paid
         ? 0
-        : (item.size >= 0 && item.size !== null
+        : (item.sizes[item.size].discount
             ? item.sizes[item.size].discount
-              ? item.sizes[item.size].discount
-              : item.sizes[item.size]?.price
-            : item.discount
-            ? item.discount
-            : item.price) * item.quantity;
+            : item.sizes[item.size].price) * item.quantity;
 
       subtotal += total; // set the total amount
 
@@ -132,13 +128,9 @@ function CartPage() {
               ...data,
               paid: true,
               amountPaid:
-                (cart.isMultiple
+                (cart.sizes[cart.size].discount
                   ? cart.sizes[cart.size].discount
-                    ? cart.sizes[cart.size].discount
-                    : cart.sizes[cart.size].price
-                  : cart.discount
-                  ? cart.discount
-                  : cart.price) * cart.quantity,
+                  : cart.sizes[cart.size].price) * cart.quantity,
               delivery: {
                 ...data.delivery,
                 date: new Date(),
@@ -161,13 +153,9 @@ function CartPage() {
                     ...cart,
                     paid: true,
                     amountPaid:
-                      (cart.isMultiple
+                      (cart.sizes[cart.size].discount
                         ? cart.sizes[cart.size].discount
-                          ? cart.sizes[cart.size].discount
-                          : cart.sizes[cart.size].price
-                        : cart.discount
-                        ? cart.discount
-                        : cart.price) * cart.quantity,
+                        : cart.sizes[cart.size].price) * cart.quantity,
                     delivery: {
                       ...cart.delivery,
                       date: new Date(),

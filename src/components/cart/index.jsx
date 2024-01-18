@@ -66,7 +66,7 @@ function CartItem({ item, setLoading, setCarts }) {
       <div className="sm:max-w-[200px] max-h-[250px] overflow-hidden">
         <img
           className="w-full object-bottom h-full"
-          src={item.image}
+          src={item.images[0]?.url}
           alt={`${item.name} from Moheen Store`}
         />
       </div>
@@ -76,15 +76,11 @@ function CartItem({ item, setLoading, setCarts }) {
 
           <p className="text-sm text-neutral">
             ₦{" "}
-            {item.size >= 0 && item.size !== null
-              ? (item.sizes[item.size]?.discount
-                  ? item.sizes[item.size]?.discount * item.quantity
-                  : item.sizes[item.size]?.price * item.quantity
-                ).toLocaleString("en-US")
-              : (item.discount
-                  ? item.discount * item.quantity
-                  : item.price * item.quantity
-                ).toLocaleString("en-US")}
+            {(
+              (item.sizes[item.size]?.discount
+                ? item.sizes[item.size]?.discount
+                : item.sizes[item.size]?.price) * item.quantity
+            ).toLocaleString("en-US")}
           </p>
         </div>
 
@@ -104,24 +100,22 @@ function CartItem({ item, setLoading, setCarts }) {
         </div>
 
         <div className="flex items-center gap-2">
-          {item.sizes && (
-            <div className="flex items-center gap-2">
-              <label htmlFor={`size_${item.id}`}>Size</label>
-              <select
-                disabled={item.paid}
-                id={`size_${item.id}`}
-                onChange={(e) => updateCart("size", e.target.value)}
-                className="pl-2 py-1 text-center"
-                value={item.size}
-              >
-                {item.sizes.map((option, i) => (
-                  <option key={option.size} value={i}>
-                    {option.size}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <label htmlFor={`size_${item.id}`}>Size</label>
+            <select
+              disabled={item.paid}
+              id={`size_${item.id}`}
+              onChange={(e) => updateCart("size", e.target.value)}
+              className="pl-2 py-1 text-center"
+              value={item.size}
+            >
+              {item.sizes.map((option, i) => (
+                <option key={option.size} value={i}>
+                  {option.size}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="flex items-center gap-2">
             <label htmlFor={`quantity_${item.id}`}>Quantity</label>

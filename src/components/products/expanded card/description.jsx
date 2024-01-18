@@ -1,14 +1,18 @@
 /* eslint-disable react/prop-types */
+import { Autoplay } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/autoplay";
+
 function ProductDescription({
   type,
-  image,
+  images,
   name,
-  price,
-  discount,
   description,
   tags,
   clip,
-  isMultiple,
   sizes,
   colors,
   chosenColor,
@@ -20,10 +24,30 @@ function ProductDescription({
         !clip ? "visible relative" : "invisible absolute"
       } sm:relative sm:opacity-100 sm:visible sm:w-[250px] bg-white flex flex-col`}
     >
-      <picture className="bg-shades-200 sm:w-[250px] sm:h-[250px] flex flex-col bg-opacity-40">
-        <source srcSet={image} media="(min-width: 768px)" />
-        <img className="w-full h-full flex-1" src={image} alt={name} />
-      </picture>
+      <Swiper
+        // install Swiper modules
+        modules={[Autoplay]}
+        loop={true}
+        autoplay={{
+          delay: 3500,
+          disableOnInteraction: false,
+        }}
+        slidesPerView={1}
+        className="h-full w-full"
+      >
+        {images.map((image) => (
+          <SwiperSlide key={image.id} className="relative">
+            <picture className="bg-shades-200 max-h-[220px] flex flex-col bg-opacity-40">
+              <source srcSet={image.url} media="(min-width: 768px)" />
+              <img
+                className="w-full h-full flex-1"
+                src={image.url}
+                alt={name}
+              />
+            </picture>
+          </SwiperSlide>
+        ))}
+      </Swiper>
 
       <div className="flex flex-col justify-between p-4 h-full">
         <small className="uppercase mb-1">{type}</small>
@@ -64,20 +88,17 @@ function ProductDescription({
         <div className="flex items-center gap-2 mb-4 mt-auto">
           <h1 className="md:text-[.9rem]">Unit Price: </h1>
           <h1 className="price text-[1.2rem]">
-            $
-            {isMultiple
+            ₦
+            {(sizes[0].discount
               ? sizes[0].discount
-                ? sizes[0].discount
-                : sizes[0].price
-              : discount
-              ? discount
-              : price}
+              : sizes[0].price
+            ).toLocaleString("en-US")}
           </h1>
-          {isMultiple
-            ? sizes[0].discount && (
-                <del className="text-xs">${sizes[0].price}</del>
-              )
-            : discount && <del className="text-xs">${price}</del>}
+          {sizes[0].discount && (
+            <del className="text-xs">
+              ₦{sizes[0].price.toLocaleString("en-US")}
+            </del>
+          )}
         </div>
       </div>
     </div>

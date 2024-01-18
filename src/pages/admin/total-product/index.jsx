@@ -103,15 +103,7 @@ function TotalProduct() {
             (product, id) =>
               product.type.includes(filter) &&
               product.name.toLowerCase().match(search) && (
-                <ProductCard
-                  admin
-                  key={id}
-                  {...product}
-                  // deleteProduct={() => handleDelete(product.type, product.id, id)}
-                  // setDeleted={() =>
-                  //   deleted === id ? setDeleted("") : setDeleted(id)
-                  // }
-                />
+                <ProductCard admin key={id} {...product} />
               )
           )}
         </div>

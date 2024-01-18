@@ -14,18 +14,15 @@ import { deliveryTax } from "../../../assets/data";
 function Checkout({
   type,
   name,
-  discount,
-  price,
   id,
   setModal,
-  isMultiple,
   sizes,
   clip,
   checkout,
   setCheckout,
   back,
 }) {
-  const [size, setSize] = useState(isMultiple ? 0 : null);
+  const [size, setSize] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [disabled, setDisabled] = useState(false);
   const [saveDetails, setSaveDetails] = useState(false);
@@ -44,13 +41,8 @@ function Checkout({
       status: "pending",
       name: name,
       amountPaid:
-        (isMultiple
-          ? sizes[size].discount
-            ? sizes[size].discount
-            : sizes[size].price
-          : discount
-          ? discount
-          : price) * quantity,
+        (sizes[size].discount ? sizes[size].discount : sizes[size].price) *
+        quantity,
       delivery: {
         ...checkout,
         date: new Date(),
@@ -107,13 +99,8 @@ function Checkout({
     reference: new Date().getTime().toString(),
     email: user?.email,
     amount:
-      ((!isMultiple
-        ? discount
-          ? discount * quantity
-          : price * quantity
-        : sizes[size]?.discount
-        ? sizes[size]?.discount * quantity
-        : sizes[size]?.price * quantity) +
+      ((sizes[size]?.discount ? sizes[size]?.discount : sizes[size]?.price) *
+        quantity +
         deliveryTax.filter(
           (item) => item.state === checkout.delivery_location
         )[0].fee) *
@@ -196,22 +183,20 @@ function Checkout({
         </div>
 
         <div className="flex items-center gap-2">
-          {isMultiple && (
-            <div className="flex items-center gap-2">
-              <label htmlFor={`size_${id}`}>Size</label>
-              <select
-                id={`size_${id}`}
-                onChange={(e) => setSize(e.target.value)}
-                className="pl-2 py-1 text-center"
-              >
-                {sizes.map((option, i) => (
-                  <option key={option.size} value={i}>
-                    {option.size}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <label htmlFor={`size_${id}`}>Size</label>
+            <select
+              id={`size_${id}`}
+              onChange={(e) => setSize(e.target.value)}
+              className="pl-2 py-1 text-center"
+            >
+              {sizes.map((option, i) => (
+                <option key={option.size} value={i}>
+                  {option.size}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="flex items-center gap-2">
             <label htmlFor={`quantity_${id}`}>Quantity</label>
@@ -232,31 +217,17 @@ function Checkout({
         <div className="space-y-3">
           <div className="flex justify-between w-full items-center">
             <p>Subtotal</p>
-            {!isMultiple ? (
-              <p>
-                ₦{" "}
-                {discount
-                  ? (discount * quantity).toLocaleString("en-US")
-                  : (price * quantity).toLocaleString("en-US")}{" "}
-                {discount && (
-                  <del>₦ {(price * quantity).toLocaleString("en-US")}</del>
-                )}
-              </p>
-            ) : (
-              <p>
-                ₦{" "}
-                {sizes[size]?.discount
-                  ? (sizes[size]?.discount * quantity).toLocaleString("en-US")
-                  : (sizes[size]?.price * quantity).toLocaleString(
-                      "en-US"
-                    )}{" "}
-                {sizes[size]?.discount && (
-                  <del>
-                    ₦ {(sizes[size]?.price * quantity).toLocaleString("en-US")}
-                  </del>
-                )}
-              </p>
-            )}
+            <p>
+              ₦{" "}
+              {sizes[size]?.discount
+                ? (sizes[size]?.discount * quantity).toLocaleString("en-US")
+                : (sizes[size]?.price * quantity).toLocaleString("en-US")}{" "}
+              {sizes[size]?.discount && (
+                <del>
+                  ₦ {(sizes[size]?.price * quantity).toLocaleString("en-US")}
+                </del>
+              )}
+            </p>
           </div>
 
           <div className="flex justify-between w-full items-center">
@@ -276,35 +247,20 @@ function Checkout({
 
           <div className="flex justify-between w-full items-center border-y border-neutral py-2">
             <p>Total</p>
-            {!isMultiple ? (
-              <p>
-                ₦{" "}
-                {(discount
-                  ? discount * quantity +
-                    deliveryTax.filter(
-                      (item) => item.state === checkout.delivery_location
-                    )[0].fee
-                  : price * quantity +
-                    deliveryTax.filter(
-                      (item) => item.state === checkout.delivery_location
-                    )[0].fee
-                ).toLocaleString("en-US")}
-              </p>
-            ) : (
-              <p>
-                ₦
-                {(sizes[size]?.discount
-                  ? sizes[size]?.discount * quantity +
-                    deliveryTax.filter(
-                      (item) => item.state === checkout.delivery_location
-                    )[0].fee
-                  : sizes[size]?.price * quantity +
-                    deliveryTax.filter(
-                      (item) => item.state === checkout.delivery_location
-                    )[0].fee
-                ).toLocaleString("en-US")}
-              </p>
-            )}
+
+            <p>
+              ₦
+              {(sizes[size]?.discount
+                ? sizes[size]?.discount * quantity +
+                  deliveryTax.filter(
+                    (item) => item.state === checkout.delivery_location
+                  )[0].fee
+                : sizes[size]?.price * quantity +
+                  deliveryTax.filter(
+                    (item) => item.state === checkout.delivery_location
+                  )[0].fee
+              ).toLocaleString("en-US")}
+            </p>
           </div>
         </div>
       </div>
