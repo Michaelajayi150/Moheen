@@ -242,7 +242,6 @@ function UploadProduct() {
         </div>
 
         <div className="w-full space-y-2">
-          <div>Pricing</div>
           <MultiplePricing
             setProduct={setProduct}
             sizeCollection={product.sizes}
