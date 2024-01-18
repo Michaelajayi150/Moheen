@@ -23,7 +23,7 @@ function ProductCard({ data, images, name, type, sizes, popup, admin, id }) {
         modules={[Autoplay]}
         loop={true}
         autoplay={{
-          delay: 3500,
+          delay: 2000 * Math.random() + 1500,
           disableOnInteraction: false,
         }}
         slidesPerView={1}

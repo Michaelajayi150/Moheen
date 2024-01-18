@@ -83,14 +83,12 @@ function TotalProduct() {
           />
         </div>
         <p>
-          {products.filter((product) => product.type.includes(filter)).length >
-          cardsPerPage
-            ? products.filter((product) => product.type.includes(filter))
-                .length % cardsPerPage
+          {products.filter((product) => product.type.includes(filter)).length %
+            cardsPerPage ===
+          0
+            ? cardsPerPage
             : products.filter((product) => product.type.includes(filter))
-                .length}{" "}
-          of{" "}
-          {products.filter((product) => product.type.includes(filter)).length}{" "}
+                .length % cardsPerPage}{" "}
           items displayed
         </p>
       </div>
