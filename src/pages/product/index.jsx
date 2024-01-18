@@ -30,16 +30,13 @@ function ProductPage() {
         className="py-16 px-6 max-w-[1120px] mx-auto space-y-4"
       >
         <select
+          value={filter}
           className="p-2 border border-neutral cursor-pointer"
           onChange={(e) => setFilter(e.target.value)}
         >
           <option value="">All</option>
           {categories.map((category) => (
-            <option
-              selected={filter === category.target}
-              value={category.target}
-              key={category.name}
-            >
+            <option value={category.target} key={category.name}>
               {category.name}
             </option>
           ))}

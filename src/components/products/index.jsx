@@ -10,6 +10,7 @@ function ProductCategory({ category, name, max }) {
 
   const fetchPost = async () => {
     setLoading(true);
+
     await getDocs(collection(db, category))
       .then((querySnapshot) =>
         querySnapshot.forEach((doc) => {

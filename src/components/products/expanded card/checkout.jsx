@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { useContext, useState } from "react";
 import { MdArrowBack, MdOutlinePayment } from "react-icons/md";
 import { usePaystackPayment } from "react-paystack";
-import { collection, getDocs, query, setDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 
 import { cart } from "../../../assets";
 import { AuthContext } from "../../../App";
@@ -18,13 +18,14 @@ function Checkout({
   price,
   id,
   setModal,
+  isMultiple,
   sizes,
   clip,
   checkout,
   setCheckout,
   back,
 }) {
-  const [size, setSize] = useState(null);
+  const [size, setSize] = useState(isMultiple ? 0 : null);
   const [quantity, setQuantity] = useState(1);
   const [disabled, setDisabled] = useState(false);
   const [saveDetails, setSaveDetails] = useState(false);
@@ -34,53 +35,54 @@ function Checkout({
 
   async function addToCart(paid) {
     setLoading(true);
-    const q = query(collection(db, "users"), where("uid", "==", user?.uid));
 
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      let data = doc.data();
-      data.cart = [
-        ...data.cart,
-        {
-          id: id,
-          type: type,
-          quantity,
-          paid,
-          size,
-          status: "pending",
-          deliveryDate: "",
-          delivery: { ...checkout },
-          name: name,
-          amountPaid: (discount ? discount : price) * quantity,
-          cid: data.cart.length + 1,
-        },
-      ];
+    const cartItem = {
+      type: type,
+      quantity,
+      paid,
+      size,
+      status: "pending",
+      name: name,
+      amountPaid:
+        (isMultiple
+          ? sizes[size].discount
+            ? sizes[size].discount
+            : sizes[size].price
+          : discount
+          ? discount
+          : price) * quantity,
+      delivery: {
+        ...checkout,
+        date: new Date(),
+      },
+      pid: id,
+      uid: user?.uid,
+    };
 
-      setDoc(
-        doc.ref,
-        { cart: data.cart, details: saveDetails ? checkout : null },
-        { merge: true }
-      )
-        .then(() => {
-          setDisabled(false);
-          setLoading(false);
+    await addDoc(collection(db, "carts"), cartItem)
+      .then((ref) => {
+        setDisabled(false);
+        setLoading(false);
 
-          if (saveDetails) {
-            toast.success("Cart has been added and details saved");
-          } else {
-            toast.success("Cart has been added");
-          }
-          setCart(data.cart);
-          setModal(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("Error. try again");
-          setDisabled(false);
-          setLoading(false);
-        });
-    });
+        if (saveDetails) {
+          const docRef = doc(db, "users", user?.id);
+          updateDoc(docRef, { details: checkout })
+            .then(() => toast.success("Cart has been added and details saved"))
+            .catch(() => toast.success("Cart has been added"));
+        } else {
+          toast.success("Cart has been added");
+        }
+
+        setModal(false);
+        updateDoc(ref, { id: ref.id });
+        setCart((prev) => [...prev, { ...cartItem, id: ref.id }]);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Error. try again");
+        setDisabled(false);
+        setLoading(false);
+      });
   }
 
   // you can call this function anything
@@ -105,12 +107,12 @@ function Checkout({
     reference: new Date().getTime().toString(),
     email: user?.email,
     amount:
-      ((size === null
+      ((!isMultiple
         ? discount
           ? discount * quantity
           : price * quantity
-        : sizes[size].discount
-        ? sizes[size].discount * quantity
+        : sizes[size]?.discount
+        ? sizes[size]?.discount * quantity
         : sizes[size]?.price * quantity) +
         deliveryTax.filter(
           (item) => item.state === checkout.delivery_location
@@ -130,7 +132,6 @@ function Checkout({
         console.log("Load payment platform");
         initializePayment(onSuccess, onClose);
       } else {
-        console.log("Add to cart");
         addToCart(paid);
       }
     }
@@ -195,7 +196,7 @@ function Checkout({
         </div>
 
         <div className="flex items-center gap-2">
-          {sizes && (
+          {isMultiple && (
             <div className="flex items-center gap-2">
               <label htmlFor={`size_${id}`}>Size</label>
               <select
@@ -231,7 +232,7 @@ function Checkout({
         <div className="space-y-3">
           <div className="flex justify-between w-full items-center">
             <p>Subtotal</p>
-            {size === null ? (
+            {!isMultiple ? (
               <p>
                 ₦{" "}
                 {discount
@@ -257,6 +258,7 @@ function Checkout({
               </p>
             )}
           </div>
+
           <div className="flex justify-between w-full items-center">
             <p>Estimated delivery fee</p>
             <p>
@@ -274,7 +276,7 @@ function Checkout({
 
           <div className="flex justify-between w-full items-center border-y border-neutral py-2">
             <p>Total</p>
-            {size === null ? (
+            {!isMultiple ? (
               <p>
                 ₦{" "}
                 {(discount

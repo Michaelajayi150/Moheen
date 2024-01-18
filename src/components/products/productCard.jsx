@@ -1,10 +1,25 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import ExpandedCard from "./expanded card";
+import * as MdIcons from "react-icons/md";
 import { cart } from "../../assets";
+import ExpandedCard from "./expanded card";
+import { useNavigate } from "react-router-dom";
 
-function ProductCard({ data, image, name, price, discount, popup }) {
+function ProductCard({
+  data,
+  image,
+  name,
+  type,
+  price,
+  isMultiple,
+  sizes,
+  discount,
+  popup,
+  admin,
+  id,
+}) {
   const [modal, setModal] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="card bg-white">
@@ -18,18 +33,36 @@ function ProductCard({ data, image, name, price, discount, popup }) {
       </picture>
 
       <div className="flex flex-col justify-between p-4">
-        <small className="uppercase mb-1">{data.type}</small>
+        <small className="uppercase mb-1">{admin ? type : data.type}</small>
         <h1 className="card-title text-h1 md:text-[1.2rem] truncate">{name}</h1>
 
         <div className="flex items-center gap-2 mb-4">
           <h1 className="price text-h1 md:text-[1.2rem]">
-            ${discount ? discount : price}
+            $
+            {isMultiple
+              ? sizes[0].discount
+                ? sizes[0].discount
+                : sizes[0].price
+              : discount
+              ? discount
+              : price}
           </h1>
-          {discount && <del className="text-xs">${price}</del>}
+          {isMultiple
+            ? sizes[0].discount && (
+                <del className="text-xs">${sizes[0].price}</del>
+              )
+            : discount && <del className="text-xs">${price}</del>}
         </div>
-        {!popup && (
+        {!popup && !admin ? (
           <button onClick={() => setModal(true)} className="card-btn">
             <img src={cart} alt="cart" /> Add to Cart
+          </button>
+        ) : (
+          <button
+            onClick={() => navigate(`/admin/uploadProduct/${type}/${id}`)}
+            className="card-btn !gap-[4px]"
+          >
+            <MdIcons.MdEditNote size="1.8rem" /> Edit / Modify
           </button>
         )}
       </div>

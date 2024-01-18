@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import { IoEllipsisHorizontalSharp } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
-function DeliveryItem({ id, cart, popAddress }) {
+function DeliveryItem({ id, cart }) {
   return id === "fullname" ? (
     cart?.delivery?.firstName + " " + cart?.delivery?.lastName
   ) : id === "status" ? (
@@ -21,12 +21,12 @@ function DeliveryItem({ id, cart, popAddress }) {
   ) : id === "email" ? (
     <span className="normal-case py-1">{cart?.delivery?.email}</span>
   ) : id === "ellipsis" ? (
-    <div className="pt-1.5">
-      <IoEllipsisHorizontalSharp
-        onClick={popAddress}
-        className="cursor-pointer"
-      />
-    </div>
+    <Link
+      to={`/admin/deliveries/view?deliveryId=${encodeURIComponent(cart.id)}`}
+      className="bg-opacity-20 w-fit py-2 border cursor-pointer text-xs px-4 rounded"
+    >
+      View
+    </Link>
   ) : (
     cart[id]
   );

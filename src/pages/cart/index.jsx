@@ -7,7 +7,7 @@ import {
   getDoc,
   getDocs,
   query,
-  setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 
@@ -18,7 +18,7 @@ import { deliveryTax } from "../../assets/data";
 import CartItem from "../../components/cart";
 import CartLocation from "../../components/cart/cartLocation";
 import { usePaystackPayment } from "react-paystack";
-import Preloader from "../../components/cart/preloader";
+import Preloader from "../../components/preloader";
 
 function CartPage() {
   const [carts, setCarts] = useState([]);
@@ -28,6 +28,7 @@ function CartPage() {
 
   const [deliveryAmount, setDeliveryAmount] = useState(0);
   const { cart, user, setUser } = useContext(AuthContext);
+
   const info =
     JSON.parse(sessionStorage.getItem("moheen-shop-checkout-details")) || null;
   const navigate = useNavigate();
@@ -41,6 +42,27 @@ function CartPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Get Carts
+  useEffect(() => {
+    setLoading(true);
+    setCarts([]);
+
+    cart.forEach(async (item) => {
+      const docRef = doc(db, item.type, item.pid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        setCarts((prev) => [...prev, { ...docSnap.data(), ...item }]);
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    });
+
+    setLoading(false);
+  }, [cart]);
+
+  // Calculate total and subtotal
   useEffect(() => {
     let subtotal = 0;
     let delivery = 0;
@@ -49,7 +71,7 @@ function CartPage() {
     carts.forEach((item) => {
       const total = item.paid
         ? 0
-        : (item?.size
+        : (item.size >= 0 && item.size !== null
             ? item.sizes[item.size].discount
               ? item.sizes[item.size].discount
               : item.sizes[item.size]?.price
@@ -79,95 +101,6 @@ function CartPage() {
     setDeliveryAmount(delivery);
   }, [carts]);
 
-  async function deleteCart(index) {
-    setLoading(true);
-    let newCarts = Array.from(carts);
-    newCarts.splice(index, 1);
-
-    setCarts(newCarts);
-    const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-
-    const querySnapshot = await getDocs(q);
-
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      setDoc(doc.ref, { cart: newCarts }, { merge: true })
-        .then(() => {
-          toast.success("Item has been deleted from cart", {
-            containerId: index,
-          });
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("Error. try again", { containerId: index });
-          setLoading(false);
-        });
-    });
-  }
-
-  async function updateCart(index, name, value) {
-    setLoading(true);
-
-    const newCarts = carts.map((cart, id) => {
-      if (id === index) {
-        return { ...cart, [name]: value };
-      }
-      return cart;
-    });
-
-    const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      setDoc(doc.ref, { cart: newCarts }, { merge: true })
-        .then(() => {
-          toast.success(
-            name !== "paid"
-              ? "Item has been updated from cart"
-              : "Your payment have been received, you will be contacted shortly"
-          );
-
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-
-          if (name === "paid") {
-            toast.success(
-              "Your payment have been received, please refresh to update cart"
-            );
-          } else {
-            toast.error("Error. try again");
-          }
-
-          setLoading(false);
-        });
-    });
-
-    setCarts(newCarts);
-  }
-
-  useEffect(() => {
-    setLoading(true);
-    setCarts([]);
-
-    cart.forEach(async (item) => {
-      const docRef = doc(db, item.type, item.id);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        setCarts((prev) => [...prev, { ...docSnap.data(), ...item }]);
-      } else {
-        // docSnap.data() will be undefined in this case
-        console.log("No such document!");
-      }
-
-      setLoading(false);
-    });
-  }, [cart]);
-
   const paymentKey = import.meta.env.VITE_CLIENT_PAYSTACK_API_KEY;
 
   const initializePayment = usePaystackPayment({
@@ -187,43 +120,76 @@ function CartPage() {
   };
 
   const checkoutAll = async () => {
-    const newCarts = carts.map((cart) => {
-      if (cart.paid === false) {
-        return {
-          ...cart,
-          paid: true,
-          amountPaid:
-            (cart.discount ? cart.discount : cart.price) * cart.quantity,
-        };
-      }
-      return cart;
-    });
-
-    const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-
+    const q = query(collection(db, "carts"), where("uid", "==", user?.uid));
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      setDoc(doc.ref, { cart: newCarts }, { merge: true })
-        .then(() => {
-          toast.success(
-            "Your payment have been received, you will be contacted shortly"
-          );
-
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.success(
-            "Your payment have been received, please refresh to update cart"
-          );
-
-          setLoading(false);
+      let data = doc.data();
+      if (data.paid === false) {
+        const updatedCart = carts.map((cart) => {
+          if (cart.id === data.id && cart.paid === false) {
+            return {
+              ...data,
+              paid: true,
+              amountPaid:
+                (cart.isMultiple
+                  ? cart.sizes[cart.size].discount
+                    ? cart.sizes[cart.size].discount
+                    : cart.sizes[cart.size].price
+                  : cart.discount
+                  ? cart.discount
+                  : cart.price) * cart.quantity,
+              delivery: {
+                ...data.delivery,
+                date: new Date(),
+              },
+            };
+          }
+          return cart;
         });
-    });
+        // doc.data() is never undefined for query doc snapshots
+        updateDoc(doc.ref, updatedCart[0])
+          .then(() => {
+            toast.success(
+              "Your payment have been received, you will be contacted shortly"
+            );
 
-    setCarts(newCarts);
+            setCarts((currentCarts) =>
+              currentCarts.map((cart) => {
+                if (cart.id === data.id && cart.paid === false) {
+                  return {
+                    ...cart,
+                    paid: true,
+                    amountPaid:
+                      (cart.isMultiple
+                        ? cart.sizes[cart.size].discount
+                          ? cart.sizes[cart.size].discount
+                          : cart.sizes[cart.size].price
+                        : cart.discount
+                        ? cart.discount
+                        : cart.price) * cart.quantity,
+                    delivery: {
+                      ...cart.delivery,
+                      date: new Date(),
+                    },
+                  };
+                }
+                return cart;
+              })
+            );
+
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.success(
+              "Your payment have been received, please refresh to update cart"
+            );
+
+            setLoading(false);
+          });
+      }
+    });
   };
 
   // you can call this function anything
@@ -256,8 +222,11 @@ function CartPage() {
               <div className="space-y-3 mt-2">
                 {info?.delivery_location ? (
                   <>
-                    {info?.address && `${info.address}, `}
-                    <br />
+                    {info?.address && (
+                      <>
+                        {info.address}, <br />
+                      </>
+                    )}
                     {info.delivery_location}, Nigeria
                   </>
                 ) : (
@@ -334,7 +303,7 @@ function CartPage() {
             ) : (
               <div className="flex flex-col gap-6 pl-4 pr-6 py-4">
                 {carts
-                  .filter((cart) => cart.status === status)
+                  .filter((item) => item.status === status)
                   .map((item, id) => (
                     <div
                       key={id}
@@ -349,10 +318,8 @@ function CartPage() {
                       <div className="w-full flex max-sm:flex-col md:flex-row sm:items-stretch gap-6 text-gray-400 mb-3">
                         <CartItem
                           item={item}
-                          deleteCart={() => deleteCart(id)}
-                          updateCart={(name, value) =>
-                            updateCart(id, name, value)
-                          }
+                          setCarts={setCarts}
+                          setLoading={setLoading}
                         />
                       </div>
                       <CartLocation

@@ -161,17 +161,14 @@ function ProductForm({ clip, next, checkout, setCheckout }) {
                     .slice(0, 52)
                     .some((item) => item.state === checkout.delivery_location)
             }
+            value={checkout.delivery_location}
           >
             <option value="">--- Please Select ---</option>
             {deliveryTax
               .slice(0, 52)
               .sort((a, b) => a.state.localeCompare(b.state))
               .map(({ state }) => (
-                <option
-                  selected={checkout.delivery_location === state}
-                  value={state}
-                  key={state}
-                >
+                <option value={state} key={state}>
                   {state}
                 </option>
               ))}
@@ -199,6 +196,7 @@ function ProductForm({ clip, next, checkout, setCheckout }) {
                     .slice(52)
                     .some((item) => item.state === checkout.delivery_location)
             }
+            value={checkout.delivery_location}
             required="required"
             size="1"
             name="state"
@@ -210,11 +208,7 @@ function ProductForm({ clip, next, checkout, setCheckout }) {
               .slice(52)
               .sort((a, b) => a.state.localeCompare(b.state))
               .map(({ state }) => (
-                <option
-                  selected={checkout.delivery_location === state}
-                  value={state}
-                  key={state}
-                >
+                <option value={state} key={state}>
                   {state}
                 </option>
               ))}

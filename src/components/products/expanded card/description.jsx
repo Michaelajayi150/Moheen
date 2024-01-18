@@ -8,6 +8,11 @@ function ProductDescription({
   description,
   tags,
   clip,
+  isMultiple,
+  sizes,
+  colors,
+  chosenColor,
+  selectColor,
 }) {
   return (
     <div
@@ -26,11 +31,30 @@ function ProductDescription({
           <h1 className="card-title text-[1.2rem] truncate">{name}</h1>
           <p className="product-description text-xs">{description}</p>
           {tags && (
-            <div className="flex gap-2 items-center text-sm">
+            <div className="flex gap-2 text-sm">
               Tags:
               <ul className="flex gap-2 flex-wrap">
                 {tags?.map((tag) => (
-                  <li key={tag}>{tag}</li>
+                  <li key={tag.label}>{tag.value}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {colors && (
+            <div className="flex gap-2 text-sm items-center">
+              Colors:
+              <ul className="flex gap-2 flex-wrap items-center">
+                {colors.map((color) => (
+                  <li
+                    key={color.label}
+                    onClick={() => selectColor(color.value)}
+                    style={{ backgroundColor: color.value }}
+                    className={`${
+                      chosenColor === color.value
+                        ? "border-shades-200 w-7 h-7 scale-105"
+                        : "border-trasparent w-6 h-6"
+                    } border-2 duration-500 rounded-full`}
+                  />
                 ))}
               </ul>
             </div>
@@ -40,9 +64,20 @@ function ProductDescription({
         <div className="flex items-center gap-2 mb-4 mt-auto">
           <h1 className="md:text-[.9rem]">Unit Price: </h1>
           <h1 className="price text-[1.2rem]">
-            ${discount ? discount : price}
+            $
+            {isMultiple
+              ? sizes[0].discount
+                ? sizes[0].discount
+                : sizes[0].price
+              : discount
+              ? discount
+              : price}
           </h1>
-          {discount && <del className="text-xs">${price}</del>}
+          {isMultiple
+            ? sizes[0].discount && (
+                <del className="text-xs">${sizes[0].price}</del>
+              )
+            : discount && <del className="text-xs">${price}</del>}
         </div>
       </div>
     </div>

@@ -17,6 +17,7 @@ function ExpandedCard({ setModal, item }) {
     lastName: "",
     phone: "",
     delivery_location: "",
+    color: item.colors.length >= 1 ? item.colors[0].value : "",
   });
 
   return (
@@ -43,7 +44,14 @@ function ExpandedCard({ setModal, item }) {
           </div>
         </div>
 
-        <ProductDescription {...item} clip={clip} />
+        <ProductDescription
+          {...item}
+          clip={clip}
+          chosenColor={form.color}
+          selectColor={(value) =>
+            setForm((prev) => ({ ...prev, color: value }))
+          }
+        />
         {!checkout ? (
           <ProductForm
             clip={clip}

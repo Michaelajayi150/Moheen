@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-
 function CartLocation({ address, delivery_location, status, paid }) {
   return (
     <div className="flex justify-between items-start w-full flex-wrap gap-6">

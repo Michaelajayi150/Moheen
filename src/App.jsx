@@ -12,6 +12,7 @@ import CartPage from "./pages/cart";
 import ScrollToTop from "./components/scrollToTop";
 import Admin from "./pages/admin";
 import HeroSection from "./components/hero";
+import AdminHeader from "./layout/adminHeader";
 
 export const CartContext = createContext();
 export const AuthContext = createContext();
@@ -21,15 +22,26 @@ function App() {
   const [user, setUserID] = useState(null);
   const [option, setOption] = useState("");
 
-  async function getCart(id) {
+  async function getCarts(id) {
+    setCart([]);
+    const q = query(collection(db, "carts"), where("uid", "==", id));
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      const data = doc.data();
+      console.log(data);
+      setCart((prev) => [...prev, data]);
+    });
+  }
+
+  async function getUserDetails(id) {
     const q = query(collection(db, "users"), where("uid", "==", id));
 
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       const data = doc.data();
-      setCart(data.cart);
-
       if (data.details) {
         if (data.details !== null) {
           sessionStorage.setItem(
@@ -50,7 +62,8 @@ function App() {
 
     if (isUser !== null) {
       setUserID(isUser);
-      getCart(isUser.uid);
+      getCarts(isUser.uid);
+      getUserDetails(isUser.uid);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -65,12 +78,12 @@ function App() {
       <AuthContext.Provider
         value={{ user, setUser, option, setOption, cart, setCart }}
       >
-        <Header />
         {option && <Sign />}
         <Routes>
           <Route
             element={
               <>
+                <Header />
                 <ScrollToTop />
                 <Outlet />
               </>
@@ -87,8 +100,19 @@ function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/products" element={<ProductPage />} />
             </Route>
-            <Route path="/admin/*" element={<Admin />} />
+
             <Route path="/cart" element={<CartPage />} />
+          </Route>
+          <Route
+            element={
+              <>
+                <AdminHeader />
+                <ScrollToTop />
+                <Outlet />
+              </>
+            }
+          >
+            <Route path="/admin/*" element={<Admin />} />
           </Route>
         </Routes>
         <Footer />

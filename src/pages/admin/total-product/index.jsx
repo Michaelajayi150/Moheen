@@ -1,55 +1,53 @@
 import { useEffect, useState } from "react";
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../middleware/firebase";
 import { categories } from "../../../assets/data";
-import ListCard from "./listCard";
 import { ToastContainer } from "react-toastify";
-import Preloader from "../../../components/cart/preloader";
+import Preloader from "../../../components/preloader";
+import ProductCard from "../../../components/products/productCard";
+import Pagination from "../../../components/pagination";
 
 function TotalProduct() {
   const [products, setProducts] = useState([]);
   const [filter, setFilter] = useState("");
-  const [deleted, setDeleted] = useState();
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const tableHeader = [
-    { name: "Name", id: "name" },
-    { name: "Type", id: "type" },
-    { name: "Price (₦)", id: "price" },
-    { name: "Discount (₦)", id: "discount" },
-    {
-      name: "Sizes",
-      id: "sizes",
-    },
-    { name: "Status", id: "status" },
-  ];
+  const [currentPage, setCurrentPage] = useState(1);
+  const cardsPerPage = 8;
+
+  // Every thing Pagination
+  const LastCardOfProducts = currentPage * cardsPerPage; // Get the last product in the page
+  const FirstCardOfProducts = LastCardOfProducts - cardsPerPage; // Get the first product in the page
+
+  const paginate = (pageNumber) => {
+    window.scrollTo({ top: 45, left: 0, behavior: "smooth" });
+    setCurrentPage(pageNumber);
+  };
+
+  const currentProductCards = products.slice(
+    FirstCardOfProducts,
+    LastCardOfProducts
+  );
 
   const fetchPost = async (category) => {
     setLoading(true);
+
     await getDocs(collection(db, category))
-      .then((querySnapshot) =>
+      .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           // doc.data() is never undefined for query doc snapshots
           const isAvailable = products.some((product) => product.id === doc.id);
           setLoading(false);
 
           if (!isAvailable) {
-            let data = doc.data;
-            if (data.status) {
-              setProducts((prev) => [...prev, { id: doc.id, ...doc.data() }]);
-            } else {
-              setProducts((prev) => [
-                ...prev,
-                { id: doc.id, ...doc.data(), status: "Published" },
-              ]);
-            }
+            setProducts((prev) => [...prev, { id: doc.id, ...doc.data() }]);
           }
-        })
-      )
+        });
+      })
       .catch((err) => {
         console.log(err);
         setProducts([]);
-        setLoading(false);
       });
     setLoading(false);
   };
@@ -61,34 +59,37 @@ function TotalProduct() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleDelete = async (type, id, index) => {
-    try {
-      await deleteDoc(doc(db, type, id));
-
-      setDeleted("");
-      let productList = Array.from(products);
-      productList.splice(index, 1);
-      setProducts(productList);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   return (
     <section className="space-y-6">
       <div className="flex flex-wrap gap-3 items-center justify-between w-full">
-        <select
-          className="p-2 border border-neutral cursor-pointer"
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          <option value="">All</option>
-          {categories.map((category) => (
-            <option value={category.target} key={category.name}>
-              {category.name}
-            </option>
-          ))}
-        </select>
+        <div className="flex gap-3 flex-1 max-xs:flex-col">
+          <select
+            className="p-2 border border-neutral cursor-pointer"
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="">All</option>
+            {categories.map((category) => (
+              <option value={category.target} key={category.name}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+
+          <input
+            placeholder="Search for an address"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="px-4 py-1.5 outline-none focus:border-[1.5px] border border-primary rounded w-full max-w-[450px]"
+          />
+        </div>
         <p>
+          {products.filter((product) => product.type.includes(filter)).length >
+          cardsPerPage
+            ? products.filter((product) => product.type.includes(filter))
+                .length % cardsPerPage
+            : products.filter((product) => product.type.includes(filter))
+                .length}{" "}
+          of{" "}
           {products.filter((product) => product.type.includes(filter)).length}{" "}
           items displayed
         </p>
@@ -97,45 +98,33 @@ function TotalProduct() {
       <Preloader modal={loading} />
 
       {products.length >= 1 ? (
-        <div className="w-[calc(100vw_-_24px)] xs:w-[calc(100vw_-_48px)] md:max-w-[calc(1120px_-_312px)] mx-auto bg-white shadow-md text-sm text-gray-500 rounded-md relative">
-          <div className="flex whitespace-nowrap overflow-x-auto max-h-[60vh] overflow-y-auto [&>*:nth-child(2)]:text-primary-600">
-            {tableHeader.map((theads) => (
-              <div className="flex-1" key={theads.name}>
-                <div className="p-4 uppercase text-gray-900 border-b-2 border-r-2 border-gray-200">
-                  {theads.name}
-                </div>
-
-                <div className="[&>*:nth-child(even)]:bg-gray-100 border-b-2 border-r-2 border-gray-200">
-                  {products.map(
-                    (product, id) =>
-                      product.type.includes(filter) && (
-                        <div
-                          key={product.name + id}
-                          className={`${
-                            deleted === id ? "!bg-red-400 text-white" : ""
-                          } p-4 capitalize`}
-                        >
-                          <ListCard
-                            theads={theads}
-                            product={product}
-                            deleteProduct={() =>
-                              handleDelete(product.type, product.id, id)
-                            }
-                            setDeleted={() =>
-                              deleted === id ? setDeleted("") : setDeleted(id)
-                            }
-                          />
-                        </div>
-                      )
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full gap-4">
+          {currentProductCards.map(
+            (product, id) =>
+              product.type.includes(filter) &&
+              product.name.toLowerCase().match(search) && (
+                <ProductCard
+                  admin
+                  key={id}
+                  {...product}
+                  // deleteProduct={() => handleDelete(product.type, product.id, id)}
+                  // setDeleted={() =>
+                  //   deleted === id ? setDeleted("") : setDeleted(id)
+                  // }
+                />
+              )
+          )}
         </div>
       ) : (
-        "No item uploaded yet"
+        <p className="my-2">No item uploaded yet</p>
       )}
+
+      <Pagination
+        cardsPerPage={cardsPerPage}
+        totalCards={products.length}
+        currentPage={currentPage}
+        paginate={paginate}
+      />
 
       <ToastContainer limit={1} />
     </section>
