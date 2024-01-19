@@ -7,7 +7,7 @@ function ImageUpload({ setProduct }) {
   const wrapperRef = useRef(null);
   const [files, setFiles] = useState([]);
 
-  const url = "https://api.cloudinary.com/v1_1/drrcyvvvq/image/upload";
+  const url = import.meta.env.VITE_CLIENT_CLOUDINARY_UPLOAD_URL;
 
   const onFileDrop = (e) => {
     const images = e.target.files;
