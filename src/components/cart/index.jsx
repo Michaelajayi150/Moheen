@@ -87,7 +87,7 @@ function CartItem({ item, setLoading, setCarts }) {
         <div className="relative pb-1">
           <h4 className="capitalize">{item.type}</h4>
           <div className="flex items-center gap-1 my-1">
-            {item.tags.map((tag, id) => (
+            {item?.tags?.map((tag, id) => (
               <span
                 className="bg-shades-200 bg-opacity-70 px-2 py-1 text-xs rounded text-neutral"
                 key={tag.label + id}
