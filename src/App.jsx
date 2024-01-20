@@ -66,7 +66,7 @@ function App() {
       getUserDetails(isUser.uid);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
   const setUser = (value) => {
     localStorage.setItem("moheen-shop-user-id", JSON.stringify(value));
