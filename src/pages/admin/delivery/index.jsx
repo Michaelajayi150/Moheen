@@ -20,15 +20,13 @@ function Delivery() {
           // doc.data() is never undefined for query doc snapshots
           const cart = doc.data();
           setCarts((currentCarts) => [...currentCarts, cart]);
-          console.log(cart);
-
-          setLoading(false);
         })
       )
       .catch((err) => {
         console.log(err);
-        setLoading(false);
       });
+
+    setLoading(false);
   }
 
   useEffect(() => {

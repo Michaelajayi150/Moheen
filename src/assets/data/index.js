@@ -112,7 +112,6 @@ export const deliveryTax = [
 
 export const categories = [
   { name: "Home Accessories", target: "home accessories" },
-  { name: "Bathroom Accessories", target: "bathroom accessories" },
   { name: "Beddings", target: "bedding" },
   { name: "Plants", target: "plants" },
   { name: "Ornaments", target: "ornaments" },
