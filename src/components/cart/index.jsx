@@ -135,7 +135,7 @@ function CartItem({ item, setLoading, setCarts }) {
           </div>
         </div>
 
-        <div className="flex gap-2 flex-wrap items-center mt-1">
+        {/* <div className="flex gap-2 flex-wrap items-center mt-1">
           {item.colors.map((color, id) => (
             <span
               onClick={() => !item.paid && updateCart("color", color.value)}
@@ -150,7 +150,22 @@ function CartItem({ item, setLoading, setCarts }) {
               key={color.value + id}
             />
           ))}
-        </div>
+        </div> */}
+        <ul className="flex text-xs w-full flex-wrap">
+          {item.colors.map((color) => (
+            <li
+              key={color.label}
+              onClick={() => !item.paid && updateCart("color", color.value)}
+              className={`${
+                item.delivery.color === color.value
+                  ? "bg-primary bg-opacity-60 text-white"
+                  : "border-transparent"
+              } duration-500 cursor-pointer p-2 rounded`}
+            >
+              {color.value}
+            </li>
+          ))}
+        </ul>
 
         {!item.paid && (
           <>

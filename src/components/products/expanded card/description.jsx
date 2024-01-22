@@ -65,23 +65,21 @@ function ProductDescription({
             </div>
           )}
           {colors && (
-            <div className="flex gap-2 text-sm items-center">
-              Colors:
-              <ul className="flex gap-2 flex-wrap items-center">
-                {colors.map((color) => (
-                  <li
-                    key={color.label}
-                    onClick={() => selectColor(color.value)}
-                    style={{ backgroundColor: color.value }}
-                    className={`${
-                      chosenColor === color.value
-                        ? "border-shades-200 w-7 h-7 scale-105"
-                        : "border-trasparent w-6 h-6"
-                    } border-2 duration-500 rounded-full`}
-                  />
-                ))}
-              </ul>
-            </div>
+            <ul className="flex text-xs w-full flex-wrap">
+              {colors.map((color) => (
+                <li
+                  key={color.label}
+                  onClick={() => selectColor(color.value)}
+                  className={`${
+                    chosenColor === color.value
+                      ? "bg-primary bg-opacity-60 text-white"
+                      : "border-transparent"
+                  } duration-500 cursor-pointer p-2 rounded`}
+                >
+                  {color.value}
+                </li>
+              ))}
+            </ul>
           )}
         </div>
 

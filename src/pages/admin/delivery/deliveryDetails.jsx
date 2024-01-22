@@ -223,10 +223,9 @@ function DeliveryDetails() {
 
           <div className="flex-1">
             <p className="border-b-2 px-3 pb-2">Color</p>
-            <p
-              className="w-12 h-5 border mt-2 ml-3"
-              style={{ backgroundColor: transaction.delivery.color }}
-            />
+            <p className="bg-primary bg-opacity-60 text-white rounded">
+              {transaction.delivery.color}
+            </p>
           </div>
         </div>
         <ToastContainer limit={1} />
