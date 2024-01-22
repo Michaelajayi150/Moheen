@@ -49,6 +49,7 @@ function ImageUpload({ setProduct }) {
             },
           }
         );
+
         let data = await res.json();
 
         setProduct((products) => ({
@@ -59,7 +60,7 @@ function ImageUpload({ setProduct }) {
           ],
         }));
 
-        setFiles((prev) => prev.filter((_, i) => i !== id));
+        setFiles((prev) => prev.filter((i) => i.image !== image));
       } catch (err) {
         console.log(err);
 

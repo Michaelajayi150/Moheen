@@ -21,7 +21,7 @@ function ProductCard({ data, images, name, type, sizes, popup, admin, id }) {
       <Swiper
         // install Swiper modules
         modules={[Autoplay]}
-        loop={true}
+        loop={images.length === 1 ? false : true}
         autoplay={{
           delay: 2000 * Math.random() + 1500,
           disableOnInteraction: false,

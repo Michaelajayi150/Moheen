@@ -16,19 +16,40 @@ function TotalProduct() {
   const [currentPage, setCurrentPage] = useState(1);
   const cardsPerPage = 8;
 
-  // Every thing Pagination
-  const LastCardOfProducts = currentPage * cardsPerPage; // Get the last product in the page
-  const FirstCardOfProducts = LastCardOfProducts - cardsPerPage; // Get the first product in the page
-
   const paginate = (pageNumber) => {
     window.scrollTo({ top: 45, left: 0, behavior: "smooth" });
     setCurrentPage(pageNumber);
   };
 
-  const currentProductCards = products.slice(
-    FirstCardOfProducts,
-    LastCardOfProducts
-  );
+  const [currentProductCards, setCurrentProductCards] = useState([]);
+  // Every thing Pagination
+
+  useEffect(() => {
+    const LastCardOfProducts = currentPage * cardsPerPage; // Get the last product in the page
+    const FirstCardOfProducts = LastCardOfProducts - cardsPerPage; // Get the first product in the page
+
+    const filteredSearch = products
+      .filter(
+        (product) =>
+          product.type.includes(filter) &&
+          product.name.toLowerCase().match(search)
+      )
+      .slice(FirstCardOfProducts, LastCardOfProducts);
+
+    if (
+      products.filter(
+        (product) =>
+          product.type.includes(filter) &&
+          product.name.toLowerCase().match(search)
+      ).length /
+        8 <
+      currentPage
+    ) {
+      setCurrentPage(1);
+    }
+
+    setCurrentProductCards(filteredSearch);
+  }, [filter, search, products, currentPage]);
 
   const fetchPost = async (category) => {
     setLoading(true);
@@ -76,20 +97,21 @@ function TotalProduct() {
           </select>
 
           <input
-            placeholder="Search for an address"
+            placeholder="Search for a product"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="px-4 py-1.5 outline-none focus:border-[1.5px] border border-primary rounded w-full max-w-[450px]"
           />
         </div>
         <p>
-          {products.filter((product) => product.type.includes(filter)).length %
-            cardsPerPage ===
-          0
-            ? cardsPerPage
-            : products.filter((product) => product.type.includes(filter))
-                .length % cardsPerPage}{" "}
-          items displayed
+          {
+            products.filter(
+              (product) =>
+                product.type.includes(filter) &&
+                product.name.toLowerCase().match(search)
+            ).length
+          }{" "}
+          items found
         </p>
       </div>
 
@@ -97,13 +119,9 @@ function TotalProduct() {
 
       {products.length >= 1 ? (
         <div className="grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-full gap-4">
-          {currentProductCards.map(
-            (product, id) =>
-              product.type.includes(filter) &&
-              product.name.toLowerCase().match(search) && (
-                <ProductCard admin key={id} {...product} />
-              )
-          )}
+          {currentProductCards.map((product, id) => (
+            <ProductCard admin key={id} {...product} />
+          ))}
         </div>
       ) : (
         <p className="my-2">No item uploaded yet</p>
@@ -111,7 +129,13 @@ function TotalProduct() {
 
       <Pagination
         cardsPerPage={cardsPerPage}
-        totalCards={products.length}
+        totalCards={
+          products.filter(
+            (product) =>
+              product.type.includes(filter) &&
+              product.name.toLowerCase().match(search)
+          ).length
+        }
         currentPage={currentPage}
         paginate={paginate}
       />
