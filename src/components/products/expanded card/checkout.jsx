@@ -222,7 +222,7 @@ function Checkout({
               {sizes[size]?.discount
                 ? (sizes[size]?.discount * quantity).toLocaleString("en-US")
                 : (sizes[size]?.price * quantity).toLocaleString("en-US")}{" "}
-              {sizes[size]?.discount && (
+              {sizes[size]?.discount !== 0 && (
                 <del>
                   ₦ {(sizes[size]?.price * quantity).toLocaleString("en-US")}
                 </del>

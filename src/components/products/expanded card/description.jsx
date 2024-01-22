@@ -37,7 +37,7 @@ function ProductDescription({
       >
         {images.map((image) => (
           <SwiperSlide key={image.id} className="relative">
-            <picture className="bg-shades-200 max-h-[220px] flex flex-col bg-opacity-40">
+            <picture className="bg-shades-200 max-h-[450px] sm:max-h-[300px] md:max-h-[250px] flex flex-col bg-opacity-40">
               <source srcSet={image.url} media="(min-width: 768px)" />
               <img
                 className="w-full h-full flex-1"
@@ -94,7 +94,7 @@ function ProductDescription({
               : sizes[0].price
             ).toLocaleString("en-US")}
           </h1>
-          {sizes[0].discount && (
+          {sizes[0].discount !== 0 && (
             <del className="text-xs">
               ₦{sizes[0].price.toLocaleString("en-US")}
             </del>

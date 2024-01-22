@@ -103,6 +103,7 @@ function ImageUpload({ setProduct }) {
             <input
               type="file"
               value=""
+              multiple
               ref={wrapperRef}
               accept="image/*"
               className="invisible absolute -left-full top-0 outline-0 border-0"

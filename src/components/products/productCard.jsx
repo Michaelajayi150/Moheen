@@ -55,7 +55,7 @@ function ProductCard({ data, images, name, type, sizes, popup, admin, id }) {
               : sizes[0].price
             ).toLocaleString("en-US")}
           </h1>
-          {sizes[0].discount && (
+          {sizes[0].discount !== 0 && (
             <del className="text-xs">
               ₦ {sizes[0].price.toLocaleString("en-US")}
             </del>
