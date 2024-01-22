@@ -31,10 +31,10 @@ function ProductCard({ data, images, name, type, sizes, popup, admin, id }) {
       >
         {images.map((image) => (
           <SwiperSlide key={image.id} className="relative">
-            <picture className="bg-shades-200 max-h-[450px] sm:max-h-[300px] md:max-h-[250px] flex flex-col bg-opacity-40">
+            <picture className="bg-shades-200 h-full flex flex-col bg-opacity-40">
               <source srcSet={image.url} media="(min-width: 768px)" />
               <img
-                className="w-full h-full flex-1"
+                className="w-full max-h-[450px] sm:max-h-[300px] md:max-h-[250px] flex-1"
                 src={image.url}
                 alt={name}
               />
