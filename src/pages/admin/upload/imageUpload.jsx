@@ -115,40 +115,42 @@ function ImageUpload({ setProduct }) {
           </div>
         </div>
 
-        {files.length >= 1 &&
-          files.map((file, id) => (
-            <div key={file.image} className="space-y-3 c min-w-[200px]">
-              {file.started && (
-                <div className="relative flex gap-2 w-full">
-                  <img
-                    className="h-[35px] object-contain"
-                    src={pngIcon}
-                    alt={file.image.name}
-                  />
-                  <div className="space-y-2 w-full text-xs">
-                    {/* displaying file name, progress bar and file size in Bytes */}
-                    <p className="truncate max-w-[170px] sm:max-w-[15ch] md:max-w-full lg:max-w-[15ch]">
-                      {file.image.name}
-                    </p>
-                    {file.started && (
-                      <progress
-                        className="h-1 w-full"
-                        max={100}
-                        value={file.percent}
-                      ></progress>
-                    )}
-                    {file.message && file.message}
-                  </div>
+        <div className="space-y-2">
+          {files.length >= 1 &&
+            files.map((file, id) => (
+              <div key={file.image} className="space-y-3 c min-w-[200px]">
+                {file.started && (
+                  <div className="relative flex gap-2 w-full">
+                    <img
+                      className="h-[35px] object-contain"
+                      src={pngIcon}
+                      alt={file.image.name}
+                    />
+                    <div className="space-y-2 w-full text-xs">
+                      {/* displaying file name, progress bar and file size in Bytes */}
+                      <p className="truncate max-w-[170px] sm:max-w-[15ch] md:max-w-full lg:max-w-[15ch]">
+                        {file.image.name}
+                      </p>
+                      {file.started && (
+                        <progress
+                          className="h-1 w-full"
+                          max={100}
+                          value={file.percent}
+                        ></progress>
+                      )}
+                      {file.message && file.message}
+                    </div>
 
-                  <RiDeleteBinLine
-                    onClick={() => removeFile(id)}
-                    size="1rem"
-                    className="text-error-500 cursor-pointer"
-                  />
-                </div>
-              )}
-            </div>
-          ))}
+                    <RiDeleteBinLine
+                      onClick={() => removeFile(id)}
+                      size="1rem"
+                      className="text-error-500 cursor-pointer"
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+        </div>
       </div>
     </div>
   );
