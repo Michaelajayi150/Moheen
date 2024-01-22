@@ -37,13 +37,13 @@ function TotalProduct() {
       .slice(FirstCardOfProducts, LastCardOfProducts);
 
     if (
-      products.filter(
-        (product) =>
-          product.type.includes(filter) &&
-          product.name.toLowerCase().match(search)
-      ).length /
-        8 <
-      currentPage
+      Math.ceil(
+        products.filter(
+          (product) =>
+            product.type.includes(filter) &&
+            product.name.toLowerCase().match(search)
+        ).length / 8
+      ) < currentPage
     ) {
       setCurrentPage(1);
     }
