@@ -12,7 +12,11 @@ function ProductSection() {
         <p className="text-lg text-shades-200">Get all you need from here</p>
       </div>
 
-      <ProductCategory category="decoration" name="home decoration" max={4} />
+      <ProductCategory
+        category="home accessories"
+        name="Home Accessories"
+        max={4}
+      />
 
       <Link
         to="/products?type="
