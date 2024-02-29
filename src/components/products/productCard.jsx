@@ -48,17 +48,23 @@ function ProductCard({ data, images, name, type, sizes, popup, admin, id }) {
         <h1 className="card-title text-h1 md:text-[1.2rem] truncate">{name}</h1>
 
         <div className="flex items-center gap-2 mb-4">
-          <h1 className="price text-h1 md:text-[1.2rem]">
-            ₦
-            {(sizes[0].discount
-              ? sizes[0].discount
-              : sizes[0].price
-            ).toLocaleString("en-US")}
-          </h1>
-          {sizes[0].discount !== 0 && (
-            <del className="text-xs">
-              ₦ {sizes[0].price.toLocaleString("en-US")}
-            </del>
+          {sizes.length >= 1 ? (
+            <>
+              <h1 className="price text-h1 md:text-[1.2rem]">
+                ₦
+                {(sizes[0]?.discount !== 0
+                  ? sizes[0].discount
+                  : sizes[0].price
+                ).toLocaleString("en-US")}
+              </h1>
+              {sizes[0]?.discount !== 0 && (
+                <del className="text-xs">
+                  ₦ {sizes[0]?.price.toLocaleString("en-US")}
+                </del>
+              )}
+            </>
+          ) : (
+            "Flexible Size"
           )}
         </div>
         {!popup && !admin ? (

@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Links } from "../assets/data";
 import * as MdIcons from "react-icons/md";
 import * as RiIcons from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { Logo } from "../assets";
+import { AuthContext } from "../App";
 
 function AdminHeader() {
+  const { setUser } = useContext(AuthContext);
   const [menu, setMenu] = useState(false);
 
   const navLinks = [
@@ -85,7 +87,7 @@ function AdminHeader() {
             menu
               ? "max-sm:fixed max-sm:top-20 h-full flex max-sm:flex-col justify-center bg-white right-0 w-1/2"
               : "relative hidden justify-between"
-          } sm:justify-between sm:items-center duration-500 max-sm:pl-6 sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
+          } sm:justify-center sm:items-center duration-500 max-sm:pl-6 sm:w-9/12 md:w-8/12 sm:flex max-sm:gap-4`}
         >
           <nav
             className={`${
@@ -102,7 +104,28 @@ function AdminHeader() {
                 {link.name}
               </Link>
             ))}
+            <Link
+              to="/"
+              onClick={() => {
+                setUser(null);
+              }}
+              className="cursor-pointer md:hidden"
+            >
+              Log out
+            </Link>
           </nav>
+        </nav>
+
+        <nav className="max-md:hidden">
+          <Link
+            to="/"
+            onClick={() => {
+              setUser(null);
+            }}
+            className="bg-primary border-2 border-white hover:bg-white hover:border-primary hover:text-primary font-semibold cursor-pointer px-3 pt-2 pb-3 rounded-md text-white"
+          >
+            Log out
+          </Link>
         </nav>
       </nav>
     </header>
