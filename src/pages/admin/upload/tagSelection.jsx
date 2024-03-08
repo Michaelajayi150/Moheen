@@ -10,6 +10,7 @@ function TagSelection({ setProduct, tags }) {
     switch (event.key) {
       case "Enter":
       case "Tab":
+      case " ":
         setProduct((prev) => ({
           ...prev,
           tags: [

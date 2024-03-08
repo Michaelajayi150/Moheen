@@ -10,6 +10,7 @@ function ColorSelection({ setProduct, colors }) {
     switch (event.key) {
       case "Enter":
       case "Tab":
+      case " ":
         setProduct((prev) => ({
           ...prev,
           colors: [
